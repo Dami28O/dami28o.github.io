@@ -16,7 +16,9 @@ export class NeuralNetwork {
     this.mouse = new THREE.Vector2()
     this.raycaster = new THREE.Raycaster()
     this.animationId = null
+    this.backupTimer = null
     this.clickCooldown = false
+    this.listenersAdded = false
     
     this.init()
   }
@@ -103,6 +105,24 @@ export class NeuralNetwork {
 
     // Handle resize
     window.addEventListener('resize', () => this.onWindowResize())
+    
+    // Handle page visibility changes to prevent neural network from stopping
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        console.log('Page hidden - starting backup timer')
+        // Start backup timer when page is hidden
+        this.backupTimer = setInterval(() => {
+          this.renderFrame()
+        }, 16) // ~60fps
+      } else {
+        console.log('Page visible - clearing backup timer')
+        // Clear backup timer when page is visible
+        if (this.backupTimer) {
+          clearInterval(this.backupTimer)
+          this.backupTimer = null
+        }
+      }
+    })
   }
 
   createNodes() {
@@ -540,6 +560,21 @@ export class NeuralNetwork {
       return
     }
     
+    this.addInteractiveListeners()
+  }
+
+  forceSetupEventListeners() {
+    console.log('Force setting up event listeners for any page')
+    this.addInteractiveListeners()
+  }
+
+  addInteractiveListeners() {
+    // Prevent adding listeners multiple times
+    if (this.listenersAdded) {
+      console.log('Interactive listeners already added, skipping')
+      return
+    }
+    
     // Test basic click detection first
     this.container.addEventListener('click', () => {
       console.log('BASIC CLICK DETECTED on container!')
@@ -658,7 +693,8 @@ export class NeuralNetwork {
         }
       })
       
-      
+      this.listenersAdded = true
+      console.log('Interactive listeners added successfully')
     }, 100)
   }
 
@@ -685,8 +721,12 @@ export class NeuralNetwork {
   }
 
 
-  animate() {
-    this.animationId = requestAnimationFrame(() => this.animate())
+  renderFrame() {
+    // Debug: Check if renderer still exists
+    if (!this.renderer || !this.scene) {
+      console.error('Neural network renderer or scene missing!')
+      return
+    }
     
     // Add subtle rotation
     this.scene.rotation.y += 0.001
@@ -745,6 +785,11 @@ export class NeuralNetwork {
     this.renderer.render(this.scene, this.camera)
   }
 
+  animate() {
+    this.animationId = requestAnimationFrame(() => this.animate())
+    this.renderFrame()
+  }
+
   onWindowResize() {
     const mainContent = document.querySelector('.main-content')
     const width = mainContent ? mainContent.clientWidth : this.container.clientWidth || window.innerWidth
@@ -770,14 +815,27 @@ export class NeuralNetwork {
       cancelAnimationFrame(this.animationId)
     }
     
+    if (this.backupTimer) {
+      clearInterval(this.backupTimer)
+    }
+    
     // Clean up Three.js objects
-    this.scene.traverse((object) => {
-      if (object.geometry) object.geometry.dispose()
-      if (object.material) object.material.dispose()
-    })
+    if (this.scene) {
+      this.scene.traverse((object) => {
+        if (object.geometry) object.geometry.dispose()
+        if (object.material) object.material.dispose()
+      })
+    }
     
     if (this.renderer) {
-      this.container.removeChild(this.renderer.domElement)
+      // Safely remove DOM element
+      try {
+        if (this.renderer.domElement && this.renderer.domElement.parentNode) {
+          this.renderer.domElement.parentNode.removeChild(this.renderer.domElement)
+        }
+      } catch (error) {
+        console.warn('Could not remove canvas element:', error)
+      }
       this.renderer.dispose()
     }
     

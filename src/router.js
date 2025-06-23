@@ -83,6 +83,19 @@ export class Router {
     }
     
     console.log(`Page rendered: ${route}, main z-index: ${main.style.zIndex}, page z-index: ${pageElement?.style.zIndex}`)
+    
+    // Re-enable neural network interactivity when returning to home page
+    if (isHomePage && window.portfolioLayout?.neuralNetwork) {
+      console.log('Returned to home page - enabling neural network interactivity')
+      setTimeout(() => {
+        if (window.portfolioLayout.neuralNetwork.forceSetupEventListeners) {
+          window.portfolioLayout.neuralNetwork.forceSetupEventListeners()
+        }
+        if (window.portfolioLayout.neuralNetwork.createBioConnections) {
+          window.portfolioLayout.neuralNetwork.createBioConnections()
+        }
+      }, 100)
+    }
   }
 
   updateNavigation(activeRoute) {

@@ -7,6 +7,9 @@ export class Layout {
     this.navigation = new Navigation()
     this.themeToggle = new ThemeToggle()
     this.neuralNetwork = null
+    
+    // Store reference globally for restart functionality
+    window.portfolioLayout = this
   }
 
   render() {
@@ -53,6 +56,50 @@ export class Layout {
     return layout
   }
 
+
+  async restartNeuralNetwork() {
+    const networkContainer = document.querySelector('.neural-network-container')
+    if (!networkContainer) {
+      console.error('Neural network container not found')
+      return
+    }
+    
+    try {
+      // Destroy existing network if it exists
+      if (this.neuralNetwork) {
+        try {
+          this.neuralNetwork.destroy()
+        } catch (destroyError) {
+          console.warn('Error destroying existing neural network:', destroyError)
+        }
+        this.neuralNetwork = null
+      }
+      
+      // Clear container completely
+      networkContainer.innerHTML = ''
+      
+      // Wait a moment for cleanup
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      // Create new network
+      this.neuralNetwork = new NeuralNetwork(networkContainer)
+      console.log('Neural network restarted successfully')
+      
+      // Create bio connections after a short delay
+      setTimeout(() => {
+        if (this.neuralNetwork && typeof this.neuralNetwork.createBioConnections === 'function') {
+          this.neuralNetwork.createBioConnections()
+        }
+        
+        // Force setup of event listeners for home page when we return there
+        if (this.neuralNetwork && typeof this.neuralNetwork.forceSetupEventListeners === 'function') {
+          this.neuralNetwork.forceSetupEventListeners()
+        }
+      }, 500)
+    } catch (error) {
+      console.error('Error restarting neural network:', error)
+    }
+  }
 
   destroy() {
     if (this.neuralNetwork) {
