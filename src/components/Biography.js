@@ -5,7 +5,7 @@ export class Biography {
 
   async loadBioData() {
     try {
-      const response = await fetch('/src/data/bio.json')
+      const response = await fetch('/data/bio.json')
       this.bioData = await response.json()
     } catch (error) {
       console.error('Error loading bio data:', error)

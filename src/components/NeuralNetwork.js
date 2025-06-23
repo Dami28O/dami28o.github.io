@@ -36,7 +36,7 @@ export class NeuralNetwork {
 
   async loadBioData() {
     try {
-      const response = await fetch('/src/data/bio.json')
+      const response = await fetch('/data/bio.json')
       this.bioData = await response.json()
       console.log('Bio data loaded:', this.bioData)
     } catch (error) {

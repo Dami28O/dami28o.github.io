@@ -5,7 +5,7 @@ export class Contact {
 
   async loadContactData() {
     try {
-      const response = await fetch('/src/data/contact.json')
+      const response = await fetch('/data/contact.json')
       this.contactData = await response.json()
     } catch (error) {
       console.error('Error loading contact data:', error)

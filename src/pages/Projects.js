@@ -8,7 +8,7 @@ export class Projects {
 
   async loadProjectsData() {
     try {
-      const response = await fetch('/src/data/projects.json')
+      const response = await fetch('/data/projects.json')
       this.projectsData = await response.json()
     } catch (error) {
       console.error('Error loading projects data:', error)
