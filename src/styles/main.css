@@ -206,6 +206,7 @@ body {
   box-sizing: border-box;
   z-index: 10; /* Ensure content is above neural network background */
   pointer-events: none; /* Allow clicks to pass through to neural network */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 
@@ -468,8 +469,20 @@ body {
   transition: all var(--transition-base);
 }
 
-.project-card:hover {
+.project-card.expanded {
+  background-color: rgba(var(--bg-primary-rgb), 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(var(--border-color-rgb), 0.4);
+  border-radius: 8px;
+}
+
+.project-card:hover:not(.expanded) {
   border-color: var(--border-color);
+}
+
+.project-card.expanded:hover {
+  background-color: rgba(var(--bg-primary-rgb), 0.5);
+  border-color: rgba(var(--accent-color-rgb), 0.6);
 }
 
 .project-header {
@@ -482,7 +495,7 @@ body {
 }
 
 .project-header:hover {
-  background-color: var(--bg-secondary);
+  background-color: rgba(var(--bg-primary-rgb), 0.2);
 }
 
 .project-name {

@@ -84,17 +84,29 @@ export class Router {
     
     console.log(`Page rendered: ${route}, main z-index: ${main.style.zIndex}, page z-index: ${pageElement?.style.zIndex}`)
     
-    // Re-enable neural network interactivity when returning to home page
-    if (isHomePage && window.portfolioLayout?.neuralNetwork) {
-      console.log('Returned to home page - enabling neural network interactivity')
-      setTimeout(() => {
-        if (window.portfolioLayout.neuralNetwork.forceSetupEventListeners) {
-          window.portfolioLayout.neuralNetwork.forceSetupEventListeners()
+    // Handle neural network interactivity based on page
+    if (window.portfolioLayout?.neuralNetwork) {
+      if (isHomePage) {
+        console.log('Returned to home page - enabling neural network interactivity')
+        setTimeout(() => {
+          if (window.portfolioLayout.neuralNetwork.forceSetupEventListeners) {
+            window.portfolioLayout.neuralNetwork.forceSetupEventListeners()
+          }
+          if (window.portfolioLayout.neuralNetwork.createBioConnections) {
+            window.portfolioLayout.neuralNetwork.createBioConnections()
+          }
+        }, 100)
+      } else {
+        console.log('Left home page - hiding bio info and disabling interactivity')
+        // Hide any active bio info when leaving home page
+        if (window.portfolioLayout.neuralNetwork.hideInfo) {
+          window.portfolioLayout.neuralNetwork.hideInfo()
         }
-        if (window.portfolioLayout.neuralNetwork.createBioConnections) {
-          window.portfolioLayout.neuralNetwork.createBioConnections()
+        // Clear any listeners to ensure non-interactivity
+        if (window.portfolioLayout.neuralNetwork.disableInteractivity) {
+          window.portfolioLayout.neuralNetwork.disableInteractivity()
         }
-      }, 100)
+      }
     }
   }
 

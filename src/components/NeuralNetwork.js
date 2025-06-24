@@ -245,33 +245,83 @@ export class NeuralNetwork {
       opacity: isDark ? 0.4 : 0.2
     })
 
-    // Connect nodes between adjacent layers
+    // Track which nodes have connections
+    const connectedNodes = new Set()
+
+    // First pass: Create connections with higher probability for closer nodes
     for (let i = 0; i < this.nodes.length; i++) {
       for (let j = i + 1; j < this.nodes.length; j++) {
         const nodeA = this.nodes[i]
         const nodeB = this.nodes[j]
         const distance = nodeA.position.distanceTo(nodeB.position)
 
-        // Only connect nearby nodes
-        if (distance < 25 && Math.random() > 0.7) {
-          const geometry = new THREE.BufferGeometry().setFromPoints([
-            nodeA.position,
-            nodeB.position
-          ])
+        // Dynamic connection probability based on distance
+        let connectionChance = 0
+        if (distance < 15) {
+          connectionChance = 0.8 // 80% chance for very close nodes
+        } else if (distance < 25) {
+          connectionChance = 0.5 // 50% chance for close nodes
+        } else if (distance < 35) {
+          connectionChance = 0.2 // 20% chance for medium distance
+        }
 
-          const connection = new THREE.Line(geometry, connectionMaterial.clone())
-          connection.userData = {
-            nodeA: nodeA,
-            nodeB: nodeB,
-            originalOpacity: isDark ? 0.4 : 0.2,
-            isActive: false
-          }
-
-          this.scene.add(connection)
-          this.connections.push(connection)
+        if (Math.random() < connectionChance) {
+          this.createConnection(nodeA, nodeB, connectionMaterial, isDark)
+          connectedNodes.add(nodeA)
+          connectedNodes.add(nodeB)
         }
       }
     }
+
+    // Second pass: Ensure every node has at least one connection
+    for (let i = 0; i < this.nodes.length; i++) {
+      const node = this.nodes[i]
+      
+      if (!connectedNodes.has(node)) {
+        // Find the closest node that has connections
+        let closestNode = null
+        let closestDistance = Infinity
+        
+        for (let j = 0; j < this.nodes.length; j++) {
+          if (i === j) continue
+          
+          const otherNode = this.nodes[j]
+          const distance = node.position.distanceTo(otherNode.position)
+          
+          if (distance < closestDistance) {
+            closestDistance = distance
+            closestNode = otherNode
+          }
+        }
+        
+        if (closestNode) {
+          this.createConnection(node, closestNode, connectionMaterial, isDark)
+          connectedNodes.add(node)
+          connectedNodes.add(closestNode)
+          console.log(`Connected isolated node at ${node.position.x.toFixed(1)}, ${node.position.y.toFixed(1)}`)
+        }
+      }
+    }
+    
+    console.log(`Created ${this.connections.length} connections for ${this.nodes.length} nodes`)
+  }
+
+  createConnection(nodeA, nodeB, connectionMaterial, isDark) {
+    const geometry = new THREE.BufferGeometry().setFromPoints([
+      nodeA.position,
+      nodeB.position
+    ])
+
+    const connection = new THREE.Line(geometry, connectionMaterial.clone())
+    connection.userData = {
+      nodeA: nodeA,
+      nodeB: nodeB,
+      originalOpacity: isDark ? 0.4 : 0.2,
+      isActive: false
+    }
+
+    this.scene.add(connection)
+    this.connections.push(connection)
   }
 
   createBioConnections() {
@@ -280,22 +330,7 @@ export class NeuralNetwork {
     
     // Only setup info system on home page
     if (isHomePage) {
-      if (this.bioData && this.bioData.sections) {
-        // Create target nodes for each section
-        Object.entries(this.bioData.sections).forEach(([key, section]) => {
-          const targetGeometry = new THREE.SphereGeometry(0.1, 8, 8)
-          const targetMaterial = new THREE.MeshBasicMaterial({ 
-            color: section.color, 
-            transparent: true, 
-            opacity: 0 
-          })
-          const targetNode = new THREE.Mesh(targetGeometry, targetMaterial)
-          targetNode.position.set(section.position.x, section.position.y, 10)
-          this.scene.add(targetNode)
-          
-          this.infoTargetNodes[key] = targetNode
-        })
-        
+      if (this.bioData && this.bioData.sections) {        
         console.log('Info system initialized. Sections:', Object.keys(this.bioData.sections))
         console.log('Info nodes available:', this.infoNodes)
         
@@ -304,6 +339,8 @@ export class NeuralNetwork {
       }
     } else {
       console.log('Not home page - bio interaction system disabled')
+      // Make sure no bio info is showing on non-home pages
+      this.disableInteractivity()
     }
   }
 
@@ -352,52 +389,46 @@ export class NeuralNetwork {
     
     this.activeInfo = infoType
     const section = this.bioData.sections[infoType]
-    const targetNode = this.infoTargetNodes[infoType]
     
     console.log('Section data:', section)
-    console.log('Target node available:', !!targetNode)
     
-    if (!targetNode) {
-      console.warn('No target node for:', infoType, 'creating bio connections...')
-      this.createBioConnections()
-      return
-    }
-    
-    // Create connections from info nodes of this type to target
-    const connectionMaterial = new THREE.LineBasicMaterial({
-      color: section.color,
-      transparent: true,
-      opacity: 0
-    })
-    
-    // Connect all nodes of this type to the target position
-    if (this.infoNodes[infoType]) {
-      console.log('Creating connections for', this.infoNodes[infoType].length, 'nodes')
-      this.infoNodes[infoType].forEach(node => {
-        const geometry = new THREE.BufferGeometry().setFromPoints([
-          node.position,
-          targetNode.position
-        ])
-        
-        const connection = new THREE.Line(geometry, connectionMaterial.clone())
-        connection.userData = {
-          sourceNode: node,
-          targetNode: targetNode,
-          maxOpacity: 0.6,
-          isInfoConnection: true,
-          infoType: infoType,
-          activationTime: Date.now()
-        }
-        
-        this.scene.add(connection)
-        this.infoConnections.push(connection)
-      })
-    }
+    // Light up existing connections that connect to nodes of this type
+    this.lightUpConnections(infoType, section.color)
     
     // Show the actual info text
     this.showInfoText(section)
     
     console.log(`${infoType} info revealed! Active info is now:`, this.activeInfo)
+  }
+
+  lightUpConnections(infoType, color) {
+    const infoNodes = this.infoNodes[infoType] || []
+    
+    // Find all existing connections that connect to any node of this type
+    this.connections.forEach(connection => {
+      const nodeA = connection.userData.nodeA
+      const nodeB = connection.userData.nodeB
+      
+      // Check if either end of the connection is an info node of the selected type
+      const isConnectedToInfoNode = infoNodes.includes(nodeA) || infoNodes.includes(nodeB)
+      
+      if (isConnectedToInfoNode) {
+        // Store original properties for restoration
+        if (!connection.userData.originalColor) {
+          connection.userData.originalColor = connection.material.color.clone()
+          connection.userData.originalOpacity = connection.material.opacity
+        }
+        
+        // Light up the connection with the info node color
+        connection.material.color.setHex(color.replace('#', '0x'))
+        connection.material.opacity = 0.8
+        connection.userData.isHighlighted = true
+        connection.userData.highlightType = infoType
+        connection.userData.activationTime = Date.now() * 0.001 // For animation offset
+        
+        console.log(`Lit up connection with color: ${color}`)
+      }
+    })
   }
 
 
@@ -408,13 +439,8 @@ export class NeuralNetwork {
     
     const previousInfoType = this.activeInfo
     
-    // Remove info connections
-    this.infoConnections.forEach(connection => {
-      this.scene.remove(connection)
-      if (connection.geometry) connection.geometry.dispose()
-      if (connection.material) connection.material.dispose()
-    })
-    this.infoConnections = []
+    // Restore original connection colors
+    this.restoreConnectionColors()
     
     // Hide info text immediately
     this.hideInfoText()
@@ -423,6 +449,37 @@ export class NeuralNetwork {
     this.activeInfo = null
     
     console.log(`${previousInfoType} info hidden immediately`)
+  }
+
+  restoreConnectionColors() {
+    this.connections.forEach(connection => {
+      if (connection.userData.isHighlighted) {
+        // Restore original color and opacity
+        if (connection.userData.originalColor) {
+          connection.material.color.copy(connection.userData.originalColor)
+        }
+        if (connection.userData.originalOpacity !== undefined) {
+          connection.material.opacity = connection.userData.originalOpacity
+        }
+        
+        // Clear highlight flags
+        connection.userData.isHighlighted = false
+        connection.userData.highlightType = null
+      }
+    })
+  }
+
+  animateHighlightedConnections() {
+    if (!this.activeInfo) return
+    
+    const time = Date.now() * 0.005
+    this.connections.forEach(connection => {
+      if (connection.userData.isHighlighted) {
+        // Create a flowing pulse effect
+        const pulse = Math.sin(time + connection.userData.activationTime || 0) * 0.3 + 0.7
+        connection.material.opacity = Math.max(0.4, pulse * 0.9)
+      }
+    })
   }
 
   showInfoText(section) {
@@ -566,6 +623,23 @@ export class NeuralNetwork {
   forceSetupEventListeners() {
     console.log('Force setting up event listeners for any page')
     this.addInteractiveListeners()
+  }
+
+  disableInteractivity() {
+    console.log('Disabling neural network interactivity')
+    // Reset the listeners added flag so they can be re-added later
+    this.listenersAdded = false
+    
+    // Hide any active info
+    if (this.activeInfo) {
+      this.hideInfo()
+    }
+    
+    // Remove any info display elements
+    const infoElement = document.querySelector('.info-display')
+    if (infoElement) {
+      infoElement.remove()
+    }
   }
 
   addInteractiveListeners() {
@@ -777,10 +851,8 @@ export class NeuralNetwork {
       })
     })
     
-    // Animate info connections if they exist
-    if (this.infoConnections.length > 0) {
-      this.activateInfoConnections()
-    }
+    // Animate highlighted connections with a subtle pulse
+    this.animateHighlightedConnections()
     
     this.renderer.render(this.scene, this.camera)
   }
