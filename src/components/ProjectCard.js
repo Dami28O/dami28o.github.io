@@ -16,6 +16,11 @@ export class ProjectCard {
         <span class="expand-indicator">+</span>
       </div>
       <div class="project-details">
+        ${this.data.images && this.data.images.length > 0 ? `
+          <div class="project-images">
+            ${this.data.images.map(image => `<img src="${image}" alt="${this.data.name}" class="project-image" loading="lazy">`).join('')}
+          </div>
+        ` : ''}
         <p class="project-description">${this.data.description}</p>
         <div class="project-technologies">
           ${this.data.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}

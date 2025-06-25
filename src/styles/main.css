@@ -563,6 +563,26 @@ body {
   border-top: 1px solid var(--border-color);
 }
 
+.project-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  padding: 0 var(--spacing-md);
+}
+
+.project-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  border: 1px solid rgba(var(--border-color-rgb), 0.3);
+  transition: transform var(--transition-base);
+}
+
+.project-image:hover {
+  transform: scale(1.02);
+}
+
 .project-description {
   padding: var(--spacing-md);
   font-size: var(--font-size-sm);
