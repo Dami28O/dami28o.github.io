@@ -51,9 +51,15 @@ export class Contact {
   }
 
   renderContactLinks(container) {
-    if (!this.contactData) return
+    if (!this.contactData) {
+      console.error('No contact data available')
+      return
+    }
     
     const { links, cv } = this.contactData
+    console.log('Contact data:', { links, cv })
+    console.log('CV path:', cv?.path)
+    console.log('CV filename:', cv?.filename)
     
     container.innerHTML = `
       <div class="contact-list">
@@ -71,6 +77,16 @@ export class Contact {
         </a>
       </div>
     `
+    
+    console.log('Contact links rendered:', container.innerHTML)
+    
+    // Check if resume link was created
+    const resumeLink = container.querySelector('a[download]')
+    console.log('Resume link element:', resumeLink)
+    if (resumeLink) {
+      console.log('Resume link href:', resumeLink.href)
+      console.log('Resume link download:', resumeLink.download)
+    }
     
     // Add special handling for email link
     const emailLink = container.querySelector('.email-link')

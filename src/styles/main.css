@@ -206,7 +206,7 @@ body {
   box-sizing: border-box;
   z-index: 10; /* Ensure content is above neural network background */
   pointer-events: none; /* Allow clicks to pass through to neural network */
-  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: hidden; /* Default: no scrolling */
 }
 
 
@@ -449,7 +449,38 @@ body {
   font-weight: 300;
 }
 
-/* Projects Page */
+/* Projects Page - Enable scrolling */
+.projects-page {
+  overflow-y: auto; /* Enable scrolling only on projects page */
+  height: 100%; /* Ensure it takes full height to enable scrolling */
+}
+
+/* Custom scrollbar styling for projects page */
+.projects-page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.projects-page::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+.projects-page::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+  transition: background var(--transition-base);
+}
+
+.projects-page::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* Firefox scrollbar styling */
+.projects-page {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) var(--bg-secondary);
+}
+
 .projects-content {
   max-width: 800px;
   margin-left: auto;
@@ -646,10 +677,18 @@ body {
   }
   
   .contact-page {
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding-top: var(--spacing-lg);
-    min-height: auto;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: calc(var(--spacing-2xl) + var(--spacing-lg));
+    min-height: calc(100vh - 6rem);
+  }
+  
+  .contact-content {
+    max-width: none;
+    margin-right: 0;
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
   }
   
   .home-page {
