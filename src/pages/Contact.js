@@ -1,8 +1,17 @@
+/**
+ * Contact Page Component
+ * Displays contact information and social links
+ * Features special email handling for neural network recovery
+ */
 export class Contact {
   constructor() {
     this.contactData = null
   }
 
+  /**
+   * Load contact data from JSON file
+   * @returns {Promise} Promise that resolves when data is loaded
+   */
   async loadContactData() {
     try {
       const response = await fetch('/data/contact.json')
@@ -23,6 +32,10 @@ export class Contact {
     }
   }
 
+  /**
+   * Render the contact page
+   * @returns {HTMLElement} The complete contact page element
+   */
   render() {
     const page = document.createElement('div')
     page.className = 'page contact-page'
@@ -50,16 +63,14 @@ export class Contact {
     return page
   }
 
+  /**
+   * Render contact links and handle special email functionality
+   * @param {HTMLElement} container - Container element for contact links
+   */
   renderContactLinks(container) {
-    if (!this.contactData) {
-      console.error('No contact data available')
-      return
-    }
+    if (!this.contactData) return
     
     const { links, cv } = this.contactData
-    console.log('Contact data:', { links, cv })
-    console.log('CV path:', cv?.path)
-    console.log('CV filename:', cv?.filename)
     
     container.innerHTML = `
       <div class="contact-list">
@@ -78,28 +89,14 @@ export class Contact {
       </div>
     `
     
-    console.log('Contact links rendered:', container.innerHTML)
-    
-    // Check if resume link was created
-    const resumeLink = container.querySelector('a[download]')
-    console.log('Resume link element:', resumeLink)
-    if (resumeLink) {
-      console.log('Resume link href:', resumeLink.href)
-      console.log('Resume link download:', resumeLink.download)
-    }
-    
-    // Add special handling for email link
+    // Add special handling for email link to restart neural network if needed
     const emailLink = container.querySelector('.email-link')
     if (emailLink) {
       emailLink.addEventListener('click', () => {
-        console.log('Email link clicked - neural network check')
-        // Don't prevent default, just monitor and restart if needed
+        // Monitor and restart neural network if it disappears after email client opens
         setTimeout(() => {
-          // Check if neural network is still running after email opens
           const canvas = document.querySelector('.neural-network-container canvas')
-          
           if (!canvas || canvas.style.display === 'none') {
-            console.warn('Neural network disappeared - restarting...')
             this.restartNeuralNetwork()
           }
         }, 100)
@@ -107,6 +104,10 @@ export class Contact {
     }
   }
 
+  /**
+   * Restart the neural network if it becomes unavailable
+   * Typically used after email client interruption
+   */
   async restartNeuralNetwork() {
     // Use the layout's restart method if available
     if (window.portfolioLayout && typeof window.portfolioLayout.restartNeuralNetwork === 'function') {

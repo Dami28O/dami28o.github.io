@@ -2,6 +2,15 @@ import { Navigation } from './Navigation.js'
 import { ThemeToggle } from './ThemeToggle.js'
 import { NeuralNetwork } from './NeuralNetwork.js'
 
+/**
+ * Layout Component
+ * Main layout container that manages the overall page structure
+ * Features:
+ * - Neural network background management
+ * - Theme toggle integration
+ * - Navigation component
+ * - Global layout state management
+ */
 export class Layout {
   constructor() {
     this.navigation = new Navigation()
@@ -12,6 +21,10 @@ export class Layout {
     window.portfolioLayout = this
   }
 
+  /**
+   * Render the main layout structure
+   * @returns {HTMLElement} The complete layout element
+   */
   render() {
     const layout = document.createElement('div')
     layout.className = 'layout'
@@ -41,7 +54,6 @@ export class Layout {
     const networkContainer = layout.querySelector('.neural-network-container')
     try {
       this.neuralNetwork = new NeuralNetwork(networkContainer)
-      console.log('Neural network initialized in layout')
       
       // Create bio connections after a short delay to ensure DOM is ready
       setTimeout(() => {
@@ -56,7 +68,9 @@ export class Layout {
     return layout
   }
 
-
+  /**
+   * Restart the neural network (used for recovery after email client interruption)
+   */
   async restartNeuralNetwork() {
     const networkContainer = document.querySelector('.neural-network-container')
     if (!networkContainer) {
@@ -83,7 +97,6 @@ export class Layout {
       
       // Create new network
       this.neuralNetwork = new NeuralNetwork(networkContainer)
-      console.log('Neural network restarted successfully')
       
       // Create bio connections after a short delay
       setTimeout(() => {
@@ -101,6 +114,9 @@ export class Layout {
     }
   }
 
+  /**
+   * Clean up layout resources
+   */
   destroy() {
     if (this.neuralNetwork) {
       this.neuralNetwork.destroy()

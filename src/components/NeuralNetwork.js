@@ -1,24 +1,42 @@
 import * as THREE from 'three'
 
+/**
+ * Interactive Neural Network Component
+ * Creates a 3D neural network visualization with clickable bio information nodes
+ * Features:
+ * - Dynamic node and connection generation across multiple layers
+ * - Interactive bio nodes that display information when clicked
+ * - Theme-aware styling (light/dark mode)
+ * - Page-specific interactivity (interactive on home, background on other pages)
+ * - Mobile responsive design
+ * - Connection highlighting based on selected bio categories
+ */
 export class NeuralNetwork {
   constructor(container) {
+    // Core Three.js components
     this.container = container
     this.scene = null
     this.camera = null
     this.renderer = null
+    
+    // Network structure
     this.nodes = []
     this.connections = []
+    
+    // Bio information system
     this.infoNodes = {}
-    this.infoConnections = []
-    this.infoTargetNodes = {}
     this.activeInfo = null
     this.bioData = null
+    
+    // Interaction handling
     this.mouse = new THREE.Vector2()
     this.raycaster = new THREE.Raycaster()
+    this.listenersAdded = false
+    this.clickCooldown = false
+    
+    // Animation and lifecycle
     this.animationId = null
     this.backupTimer = null
-    this.clickCooldown = false
-    this.listenersAdded = false
     
     this.init()
   }
@@ -36,46 +54,39 @@ export class NeuralNetwork {
     this.animate()
   }
 
+  /**
+   * Load biographical data from JSON file
+   * Contains information sections for different bio categories
+   */
   async loadBioData() {
     try {
       const response = await fetch('/data/bio.json')
       this.bioData = await response.json()
-      console.log('Bio data loaded:', this.bioData)
     } catch (error) {
       console.error('Error loading bio data:', error)
     }
   }
 
+  /**
+   * Initialize Three.js scene, camera, and renderer
+   * Sets up the 3D environment and handles responsive sizing
+   */
   setupScene() {
-    // Use main content area dimensions
+    // Calculate container dimensions
     const mainContent = document.querySelector('.main-content')
     const width = mainContent ? mainContent.clientWidth : this.container.clientWidth || window.innerWidth
     const height = mainContent ? mainContent.clientHeight : this.container.clientHeight || window.innerHeight
-    
-    console.log('Neural Network container dimensions:', width, height)
-    console.log('Container element:', this.container)
 
-    // Scene
+    // Initialize Three.js components
     this.scene = new THREE.Scene()
-
-    // Camera
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      width / height,
-      0.1,
-      1000
-    )
+    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
     this.camera.position.z = 50
 
-    // Renderer
-    this.renderer = new THREE.WebGLRenderer({ 
-      alpha: true, 
-      antialias: true 
-    })
+    this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
     this.renderer.setSize(width, height)
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     
-    // Ensure proper positioning and clickability
+    // Position canvas properly
     this.renderer.domElement.style.position = 'absolute'
     this.renderer.domElement.style.top = '0'
     this.renderer.domElement.style.left = '0'
@@ -84,39 +95,16 @@ export class NeuralNetwork {
     
     this.container.appendChild(this.renderer.domElement)
 
-    console.log('Neural Network initialized successfully')
-    console.log('Canvas element:', this.renderer.domElement)
-    console.log('Canvas style:', this.renderer.domElement.style.cssText)
-    console.log('Container z-index:', window.getComputedStyle(this.container).zIndex)
-    console.log('Canvas z-index:', window.getComputedStyle(this.renderer.domElement).zIndex)
-    
-    // Check what element is actually at the canvas position
-    setTimeout(() => {
-      const rect = this.renderer.domElement.getBoundingClientRect()
-      const centerX = rect.left + rect.width / 2
-      const centerY = rect.top + rect.height / 2
-      const elementAtCenter = document.elementFromPoint(centerX, centerY)
-      console.log('🎯 Element blocking canvas at center:', elementAtCenter)
-      console.log('🎯 Element classes:', elementAtCenter?.className)
-      console.log('🎯 Element z-index:', elementAtCenter ? window.getComputedStyle(elementAtCenter).zIndex : 'none')
-      console.log('🎯 Canvas rect:', rect)
-    }, 2000)
-    
-
-    // Handle resize
+    // Event listeners
     window.addEventListener('resize', () => this.onWindowResize())
     
-    // Handle page visibility changes to prevent neural network from stopping
+    // Handle page visibility to maintain animation during focus changes
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        console.log('Page hidden - starting backup timer')
-        // Start backup timer when page is hidden
-        this.backupTimer = setInterval(() => {
-          this.renderFrame()
-        }, 16) // ~60fps
+        // Use backup timer when page is hidden (e.g., email client opens)
+        this.backupTimer = setInterval(() => this.renderFrame(), 16)
       } else {
-        console.log('Page visible - clearing backup timer')
-        // Clear backup timer when page is visible
+        // Clear backup timer when page regains focus
         if (this.backupTimer) {
           clearInterval(this.backupTimer)
           this.backupTimer = null
@@ -148,9 +136,6 @@ export class NeuralNetwork {
       const position = Math.floor((i * totalRegularNodes) / totalBioNodes)
       bioNodePositions.push(position)
     }
-    
-    console.log(`Planning ${bioNodesPerType} nodes for each of ${infoTypes.length} types`)
-    console.log('Bio node positions:', bioNodePositions)
     
     let globalNodeIndex = 0
 
@@ -187,7 +172,6 @@ export class NeuralNetwork {
           if (this.bioData.sections[infoType]) {
             const hexColor = this.bioData.sections[infoType].color
             infoColor = new THREE.Color(hexColor)
-            console.log(`Creating distributed ${infoType} node at global position ${globalNodeIndex} (layer ${layer.x}) with color:`, hexColor)
           }
         }
         
@@ -221,19 +205,11 @@ export class NeuralNetwork {
             this.infoNodes[infoType] = []
           }
           this.infoNodes[infoType].push(node)
-          
-          console.log(`Created ${infoType} node at position:`, node.position, 'with color:', infoColor.getHexString())
         }
 
         this.scene.add(node)
         this.nodes.push(node)
       }
-    })
-    
-    // Log the final distribution
-    console.log('Final bio node distribution:')
-    Object.entries(this.infoNodes).forEach(([type, nodes]) => {
-      console.log(`${type}: ${nodes.length} nodes`)
     })
   }
 
@@ -298,12 +274,9 @@ export class NeuralNetwork {
           this.createConnection(node, closestNode, connectionMaterial, isDark)
           connectedNodes.add(node)
           connectedNodes.add(closestNode)
-          console.log(`Connected isolated node at ${node.position.x.toFixed(1)}, ${node.position.y.toFixed(1)}`)
         }
       }
     }
-    
-    console.log(`Created ${this.connections.length} connections for ${this.nodes.length} nodes`)
   }
 
   createConnection(nodeA, nodeB, connectionMaterial, isDark) {
@@ -326,26 +299,20 @@ export class NeuralNetwork {
 
   createBioConnections() {
     const isHomePage = !window.location.hash || window.location.hash === '#'
-    console.log('Creating bio connections - home page:', isHomePage)
     
     // Only setup info system on home page
     if (isHomePage) {
-      if (this.bioData && this.bioData.sections) {        
-        console.log('Info system initialized. Sections:', Object.keys(this.bioData.sections))
-        console.log('Info nodes available:', this.infoNodes)
-        
+      if (this.bioData && this.bioData.sections) {
         // Ensure all info nodes are properly set up
         this.restoreAllInfoNodes()
       }
     } else {
-      console.log('Not home page - bio interaction system disabled')
       // Make sure no bio info is showing on non-home pages
       this.disableInteractivity()
     }
   }
 
   restoreAllInfoNodes() {
-    console.log('Restoring all info nodes...')
     Object.entries(this.infoNodes).forEach(([infoType, nodeArray]) => {
       nodeArray.forEach((node, index) => {
         if (node.userData.infoColor) {
@@ -353,7 +320,6 @@ export class NeuralNetwork {
           node.material.color.copy(node.userData.infoColor)
           node.material.opacity = Math.max(0.7, node.material.opacity)
           node.scale.setScalar(Math.max(1.8, node.scale.x))
-          console.log(`Restored ${infoType} node ${index}:`, node.userData.infoColor.getHexString())
         }
       })
     })
@@ -374,8 +340,6 @@ export class NeuralNetwork {
   }
 
   showInfo(infoType, activatingNode) {
-    console.log('showInfo called with:', infoType, 'bioData available:', !!this.bioData)
-    
     if (!this.bioData || !this.bioData.sections[infoType]) {
       console.error('Bio data or section not available for:', infoType)
       return
@@ -383,22 +347,17 @@ export class NeuralNetwork {
     
     // Simply hide any currently active info immediately - no transition
     if (this.activeInfo) {
-      console.log('Hiding previous info immediately:', this.activeInfo)
       this.hideInfo()
     }
     
     this.activeInfo = infoType
     const section = this.bioData.sections[infoType]
     
-    console.log('Section data:', section)
-    
     // Light up existing connections that connect to nodes of this type
     this.lightUpConnections(infoType, section.color)
     
     // Show the actual info text
     this.showInfoText(section)
-    
-    console.log(`${infoType} info revealed! Active info is now:`, this.activeInfo)
   }
 
   lightUpConnections(infoType, color) {
@@ -425,8 +384,6 @@ export class NeuralNetwork {
         connection.userData.isHighlighted = true
         connection.userData.highlightType = infoType
         connection.userData.activationTime = Date.now() * 0.001 // For animation offset
-        
-        console.log(`Lit up connection with color: ${color}`)
       }
     })
   }
@@ -434,10 +391,6 @@ export class NeuralNetwork {
 
   hideInfo() {
     if (!this.activeInfo) return
-    
-    console.log(`Hiding ${this.activeInfo} info immediately...`)
-    
-    const previousInfoType = this.activeInfo
     
     // Restore original connection colors
     this.restoreConnectionColors()
@@ -447,8 +400,6 @@ export class NeuralNetwork {
     
     // Clear active info immediately
     this.activeInfo = null
-    
-    console.log(`${previousInfoType} info hidden immediately`)
   }
 
   restoreConnectionColors() {
@@ -493,10 +444,8 @@ export class NeuralNetwork {
       const isMobile = window.innerWidth <= 768
       if (isMobile) {
         document.body.appendChild(infoElement)
-        console.log('Mobile: Appended info card to body')
       } else {
         document.querySelector('.home-content').appendChild(infoElement)
-        console.log('Desktop: Appended info card to home-content')
       }
     }
     
@@ -510,8 +459,6 @@ export class NeuralNetwork {
     
     if (isMobile) {
       // Mobile: Position at bottom of page
-      console.log(`Positioning ${section.title} at bottom for mobile`)
-      
       infoElement.style.position = 'fixed'
       infoElement.style.left = '50%'
       infoElement.style.bottom = '20px'
@@ -527,8 +474,6 @@ export class NeuralNetwork {
       // Convert world coordinates to screen percentages
       const leftPercent = Math.max(5, Math.min(70, 50 + (x / 100) * 50))
       const topPercent = Math.max(10, Math.min(80, 50 + (y / 100) * 50))
-      
-      console.log(`Positioning ${section.title} at ${leftPercent}% left, ${topPercent}% top`)
       
       infoElement.style.position = 'fixed'
       infoElement.style.left = `${leftPercent}%`
@@ -551,20 +496,10 @@ export class NeuralNetwork {
       infoElement.style.opacity = '1'
       if (isMobile) {
         infoElement.style.transform = 'translateX(-50%) scale(1)'
-        console.log('Mobile card shown at bottom, final styles:', {
-          position: infoElement.style.position,
-          bottom: infoElement.style.bottom,
-          left: infoElement.style.left,
-          zIndex: infoElement.style.zIndex,
-          width: infoElement.style.width,
-          opacity: infoElement.style.opacity
-        })
       } else {
         infoElement.style.transform = 'translate(-50%, -50%) scale(1)'
       }
     })
-    
-    console.log(`${section.title} info displayed at position:`, { leftPercent, topPercent })
   }
 
   hideInfoText() {
@@ -607,13 +542,9 @@ export class NeuralNetwork {
 
   setupEventListeners() {
     const isHomePage = !window.location.hash || window.location.hash === '#'
-    console.log('Setting up event listeners')
-    console.log('Current page hash:', window.location.hash)
-    console.log('Is home page:', isHomePage)
     
     // Only add interactive event listeners on home page
     if (!isHomePage) {
-      console.log('Not home page - skipping interactive event listeners')
       return
     }
     
@@ -621,12 +552,10 @@ export class NeuralNetwork {
   }
 
   forceSetupEventListeners() {
-    console.log('Force setting up event listeners for any page')
     this.addInteractiveListeners()
   }
 
   disableInteractivity() {
-    console.log('Disabling neural network interactivity')
     // Reset the listeners added flag so they can be re-added later
     this.listenersAdded = false
     
@@ -645,18 +574,11 @@ export class NeuralNetwork {
   addInteractiveListeners() {
     // Prevent adding listeners multiple times
     if (this.listenersAdded) {
-      console.log('Interactive listeners already added, skipping')
       return
     }
     
-    // Test basic click detection first
-    this.container.addEventListener('click', () => {
-      console.log('BASIC CLICK DETECTED on container!')
-    })
-    
     // Add click listener after renderer is created
     setTimeout(() => {
-      console.log('Adding click listener to canvas')
       
       // Mouse move for cursor changes only (no color interactions)
       this.renderer.domElement.addEventListener('mousemove', (event) => {
@@ -670,28 +592,12 @@ export class NeuralNetwork {
       
       // Click for info node activation
       this.renderer.domElement.addEventListener('click', (event) => {
-        console.log('CANVAS CLICK DETECTED!')
         event.stopPropagation()
         
         const rect = this.renderer.domElement.getBoundingClientRect()
         const mouse = new THREE.Vector2()
         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
         mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
-        
-        console.log('Mouse coordinates:', mouse.x, mouse.y)
-        console.log('Bio data available:', !!this.bioData)
-        console.log('Info nodes available:', Object.keys(this.infoNodes))
-        Object.entries(this.infoNodes).forEach(([type, nodes]) => {
-          console.log(`${type} nodes count:`, nodes.length)
-          nodes.forEach((node, i) => {
-            console.log(`  ${type} node ${i}:`, {
-              visible: node.visible,
-              opacity: node.material.opacity,
-              color: node.material.color.getHexString(),
-              position: node.position
-            })
-          })
-        })
         
         this.raycaster.setFromCamera(mouse, this.camera)
         
@@ -705,35 +611,14 @@ export class NeuralNetwork {
           })
         })
         
-        console.log('Total visible info nodes for intersection:', allInfoNodes.length)
         const intersects = this.raycaster.intersectObjects(allInfoNodes)
-        console.log('Ray intersections found:', intersects.length)
-        
-        // Special debugging for goals (blue) nodes
-        if (intersects.length > 0) {
-          const clickedNode = intersects[0].object
-          if (clickedNode.userData.infoType === 'goals') {
-            console.log('*** GOALS (BLUE) NODE CLICKED ***')
-            console.log('Goals node data:', {
-              type: clickedNode.userData.infoType,
-              visible: clickedNode.visible,
-              opacity: clickedNode.material.opacity,
-              color: clickedNode.material.color.getHexString(),
-              position: clickedNode.position
-            })
-          }
-        }
         
         if (intersects.length > 0) {
           const clickedNode = intersects[0].object
           const infoType = clickedNode.userData.infoType
-          console.log(`${infoType} node clicked!`, clickedNode.position)
-          console.log('Current active info:', this.activeInfo)
-          console.log('Bio data for clicked type:', this.bioData?.sections?.[infoType])
           
           // Prevent rapid clicking issues
           if (this.clickCooldown) {
-            console.log('Click cooldown active, ignoring click')
             return
           }
           
@@ -743,32 +628,19 @@ export class NeuralNetwork {
           }, 300)
           
           if (this.activeInfo === infoType) {
-            console.log('Hiding current info')
             this.hideInfo()
           } else {
-            console.log('Showing new info:', infoType)
-            
-            // Special debugging for 'about' section
-            if (infoType === 'about') {
-              console.log('*** ABOUT SECTION CLICKED ***')
-              console.log('About nodes available:', this.infoNodes.about?.length || 0)
-              console.log('Current about nodes visibility:', this.infoNodes.about?.map(n => ({ visible: n.visible, opacity: n.material.opacity, color: n.material.color.getHexString() })))
-            }
-            
             this.showInfo(infoType, clickedNode)
           }
         } else {
-          console.log('No intersections found with info nodes')
           // Click on empty space - hide any active info
           if (this.activeInfo) {
-            console.log('Clicked empty space, hiding active info')
             this.hideInfo()
           }
         }
       })
       
       this.listenersAdded = true
-      console.log('Interactive listeners added successfully')
     }, 100)
   }
 
@@ -795,8 +667,11 @@ export class NeuralNetwork {
   }
 
 
+  /**
+   * Main render loop that updates animations and renders the scene
+   * Handles neural network rotation, node pulsing, and connection highlighting
+   */
   renderFrame() {
-    // Debug: Check if renderer still exists
     if (!this.renderer || !this.scene) {
       console.error('Neural network renderer or scene missing!')
       return
@@ -832,19 +707,17 @@ export class NeuralNetwork {
             node.scale.setScalar(2.2 + pulse * 0.3) // Even bigger when active
           }
           
-          // Extra safety for about nodes
+          // Ensure minimum opacity for about nodes
           if (node.userData.infoType === 'about' && node.material.opacity < 0.6) {
             node.material.opacity = 0.7
-            console.log('*** Boosted about node opacity')
           }
           
-          // Extra safety for goals nodes (blue) - prevent flashing
+          // Ensure goals nodes remain visible and stable
           if (node.userData.infoType === 'goals') {
             if (node.material.opacity < 0.6 || !node.visible) {
               node.visible = true
               node.material.opacity = Math.max(0.7, node.material.opacity)
               node.material.color.copy(node.userData.infoColor)
-              console.log('*** Stabilized goals (blue) node')
             }
           }
         }
@@ -875,13 +748,20 @@ export class NeuralNetwork {
     this.adjustForMobile()
   }
 
+  /**
+   * Adjust display settings for mobile devices
+   * Currently handles basic mobile detection for future enhancements
+   */
   adjustForMobile() {
-    // Simple mobile adjustment - just log for now
     const isMobile = window.innerWidth <= 768
-    console.log('Screen size:', isMobile ? 'mobile' : 'desktop', 'width:', window.innerWidth)
+    // Mobile adjustments can be added here as needed
   }
 
 
+  /**
+   * Clean up neural network resources and event listeners
+   * Properly disposes of Three.js objects and removes DOM elements
+   */
   destroy() {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId)

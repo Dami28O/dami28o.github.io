@@ -1,3 +1,8 @@
+/**
+ * Navigation Component
+ * Renders the main navigation links for the portfolio
+ * Handles routing between different pages
+ */
 export class Navigation {
   constructor() {
     this.links = [
@@ -7,6 +12,10 @@ export class Navigation {
     ]
   }
 
+  /**
+   * Render the navigation links
+   * @returns {HTMLElement} Navigation container with all links
+   */
   render() {
     const nav = document.createElement('div')
     nav.className = 'nav-links'

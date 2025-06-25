@@ -1,9 +1,23 @@
+/**
+ * ProjectCard Component
+ * Displays project information in an expandable card format
+ * Features:
+ * - Expandable/collapsible content display
+ * - Image gallery support
+ * - Technology tags
+ * - External project links
+ * - Keyboard accessibility
+ */
 export class ProjectCard {
   constructor(projectData) {
     this.data = projectData
     this.isExpanded = false
   }
 
+  /**
+   * Render the project card with all content and event handlers
+   * @returns {HTMLElement} The complete project card element
+   */
   render() {
     const card = document.createElement('div')
     card.className = 'project-card'
@@ -42,6 +56,10 @@ export class ProjectCard {
     return card
   }
 
+  /**
+   * Toggle the expanded state of the project card
+   * @param {HTMLElement} card - The card element to toggle
+   */
   toggleExpanded(card) {
     this.isExpanded = !this.isExpanded
     const details = card.querySelector('.project-details')

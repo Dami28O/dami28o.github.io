@@ -3,6 +3,15 @@ import { Home } from './pages/Home.js'
 import { Projects } from './pages/Projects.js'
 import { Contact } from './pages/Contact.js'
 
+/**
+ * Router Component
+ * Handles client-side routing and page navigation
+ * Features:
+ * - Hash-based routing
+ * - Neural network interaction management per page
+ * - Dynamic z-index management for layering
+ * - Page lifecycle management
+ */
 export class Router {
   constructor() {
     this.routes = {
@@ -15,6 +24,9 @@ export class Router {
     this.layout = new Layout()
   }
 
+  /**
+   * Initialize the router and set up event listeners
+   */
   init() {
     // Mount layout
     document.getElementById('app').appendChild(this.layout.render())
@@ -42,6 +54,9 @@ export class Router {
     })
   }
 
+  /**
+   * Handle route changes and navigation
+   */
   handleRoute() {
     const hash = window.location.hash.slice(1) || ''
     const route = hash.split('/')[0]
@@ -56,6 +71,10 @@ export class Router {
     }
   }
 
+  /**
+   * Render the specified page and manage neural network interactions
+   * @param {string} route - The route to render
+   */
   renderPage(route) {
     const PageComponent = this.routes[route]
     
@@ -82,12 +101,10 @@ export class Router {
       if (pageElement) pageElement.style.zIndex = '10' // Also higher page z-index
     }
     
-    console.log(`Page rendered: ${route}, main z-index: ${main.style.zIndex}, page z-index: ${pageElement?.style.zIndex}`)
-    
     // Handle neural network interactivity based on page
     if (window.portfolioLayout?.neuralNetwork) {
       if (isHomePage) {
-        console.log('Returned to home page - enabling neural network interactivity')
+        // Re-enable neural network interactivity on home page
         setTimeout(() => {
           if (window.portfolioLayout.neuralNetwork.forceSetupEventListeners) {
             window.portfolioLayout.neuralNetwork.forceSetupEventListeners()
@@ -97,7 +114,6 @@ export class Router {
           }
         }, 100)
       } else {
-        console.log('Left home page - hiding bio info and disabling interactivity')
         // Hide any active bio info when leaving home page
         if (window.portfolioLayout.neuralNetwork.hideInfo) {
           window.portfolioLayout.neuralNetwork.hideInfo()
@@ -110,6 +126,10 @@ export class Router {
     }
   }
 
+  /**
+   * Update navigation link active states
+   * @param {string} activeRoute - The currently active route
+   */
   updateNavigation(activeRoute) {
     document.querySelectorAll('[data-route]').forEach(link => {
       const route = link.getAttribute('data-route').slice(1) || ''

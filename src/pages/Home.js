@@ -1,10 +1,19 @@
 import { Biography } from '../components/Biography.js'
 
+/**
+ * Home Page Component
+ * Displays the main landing page with interactive neural network background
+ * Features biography component and neural network interactions
+ */
 export class Home {
   constructor() {
     this.biography = new Biography()
   }
 
+  /**
+   * Render the home page
+   * @returns {HTMLElement} The complete home page element
+   */
   render() {
     const page = document.createElement('div')
     page.className = 'page home-page'
