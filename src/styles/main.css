@@ -71,6 +71,7 @@ body {
   line-height: 1.6;
   transition: background-color var(--transition-base), color var(--transition-base);
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 /* Layout */
@@ -260,7 +261,7 @@ body {
   .navigation {
     position: static;
     transform: none;
-    padding: 0 var(--spacing-lg);
+    padding: var(--spacing-lg);
     z-index: 30; /* Ensure navigation is above neural network on mobile */
     background-color: rgba(var(--bg-primary-rgb), 0.9);
     backdrop-filter: blur(10px);
@@ -344,7 +345,7 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
-  min-height: calc(100vh - 8rem);
+  min-height: calc(100% - 6rem);
   overflow: hidden;
   pointer-events: none; /* Allow clicks to pass through to neural network */
 }
@@ -627,7 +628,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  min-height: calc(100vh - 8rem);
+  min-height: calc(100% - 6rem);
 }
 
 .contact-content {
@@ -709,6 +710,7 @@ body {
     margin-left: 0;
     width: 100%;
     text-align: center;
+    margin-bottom: var(--spacing-2xl);
   }
   
   .home-page {
