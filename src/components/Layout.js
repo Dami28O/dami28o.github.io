@@ -2,6 +2,7 @@ import { Navigation } from './Navigation.js'
 import { ThemeToggle } from './ThemeToggle.js'
 import { NeuralNetwork } from './NeuralNetwork.js'
 
+
 /**
  * Layout Component
  * Main layout container that manages the overall page structure
@@ -34,7 +35,7 @@ export class Layout {
         <div class="neural-network-container"></div>
         <header class="header">
           <div class="header-content">
-            <h1 class="name">Dami Ogunleye</h1>
+            <h1 class="name">Damilola Ogunleye</h1>
             <p class="role">Robotics & AI Engineer</p>
           </div>
           <div class="theme-toggle-container"></div>
