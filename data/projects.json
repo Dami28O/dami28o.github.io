@@ -1,5 +1,7 @@
 {
   "projects": [
+    
+
     {
       "id": 1,
       "name": "Protalab - Agentic AI Workflow for Automated 3D Printing",
@@ -13,8 +15,8 @@
       "id": 2,
       "name": "UKSEDS Mars Rover Competition",
       "dates": "2025",
-      "description": "Designed and manufactured a tele-operated rover capable of navigating simulated Martian terrain and performing tasks such as traversing the terrain and capturing differe image capture.",
-      "technologies": ["Fusion360", "Ultimaker Cura", "Arduino"],
+      "description": "Designed and manufactured a tele-operated rover capable of navigating simulated Martian terrain and performing tasks such as traversing the terrain and capturing differe images. Ultimately, we secured 2nd place in the competition in addition to winning the 'Best Automation' award for our innovative use of automatic image capture and processing.",
+      "technologies": ["Fusion360", "Ultimaker Cura", "Arduino", "Computer Vision"],
       "images": [],
       "externalLink": "" 
     },
@@ -33,7 +35,7 @@
       "dates": "2024",
       "description": "Created a robotic gripper simulation tool using Python and PyBullet, capable of generating grasp data and evaluating grasp success for multiple gripper types and objects. Key features include realistic physics simulation, customizable parameters, automated success/failure evaluation, and random approach angle generation. Implemented success prediction using machine learning techniques, such as Logistic Regression, Support Vector Machines and Multilayer Perceptron",
       "technologies": ["Python", "Pybullet", "scikit-learn", "Pytorch"],
-      "images": [],
+      "images": ["/assets/images/ProjectPics/Gripper_Classification.png"],
       "externalLink": ""
     },
     {
@@ -58,7 +60,7 @@
       "id": 7,
       "name": "Sign Language Fingerspelling Recognition with Computer Vision",
       "dates": "2024",
-      "description": "This project is an application designed to recognize and translate ASL (American Sign Language) fingerspelling into corresponding text. It leverages machine learning and computer vision techniques, drawing inspiration from personal experiences with sign language and DeepMind's Project Euphonia, which uses AI to restore speech for individuals with communication difficulties like those with ALS. The application utilizes an MLP (Multilayer Perceptron) model built with TensorFlow, which processes hand landmarks obtained from Google's MediaPipe open-source framework. This trained model then classifies and translates ASL fingerspelling gestures in real-time.",
+      "description": "This project is an application designed to recognise and translate ASL (American Sign Language) fingerspelling into corresponding text. It leverages machine learning and computer vision techniques, drawing inspiration from personal experiences with sign language and DeepMind's Project Euphonia, which uses AI to restore speech for individuals with communication difficulties like those with ALS. The application utilises an MLP (Multilayer Perceptron) model built with TensorFlow, which processes hand landmarks obtained from Google's MediaPipe open-source framework. This trained model then classifies and translates ASL fingerspelling gestures in real-time.",
       "technologies": ["Machine Learning", "Computer Vision", "TensorFlow", "Multilayer Perceptron", "Google's MediaPipe API"],
       "images": ["/assets/images/ProjectPics/ASL.png"],
       "externalLink": "https://github.com/Dami28O/ASL-Translator"

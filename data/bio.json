@@ -1,22 +1,22 @@
 {
-  "name": "Dami Ogunleye",
+  "name": "Damilola Ogunleye",
   "role": "Robotics & AI Engineer",
   "sections": {
     "about": {
       "title": "About Me",
-      "content": "Passionate about solving societal issues with the help of robotics and artificial intelligence.",
+      "content": "Passionate about solving societal issues with the help of robotics and artificial intelligence, blending curiousity, creativity and determination.",
       "color": "#ff6b6b",
       "position": { "x": 35, "y": -15 }
     },
     "current": {
       "title": "Current Role",
-      "content": "A second year student pursuing a MEng in Robotics and Artificial Intelligence at University College London, with a specific interest in Human-Robot Interactions and computer vision.",
+      "content": "A third year student pursuing an MEng in Robotics and Artificial Intelligence at University College London, with a specific interest in the ways in which we interact with AI and computer vision.",
       "color": "#5a0839",
       "position": { "x": 25, "y": 5 }
     },
     "goals": {
       "title": "Future Aspirations",
-      "content": "Developing next-generation AI systems that revolutionise different industries, keeping a strong focus on ethical AI and its social impact.",
+      "content": "To develop next-generation AI and robotic systems that will revolutionise different industries, keeping a strong focus on ethical AI and its social impact.",
       "color": "#45b7d1",
       "position": { "x": 40, "y": -25 }
     },
