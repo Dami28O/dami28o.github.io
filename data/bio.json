@@ -10,7 +10,7 @@
     },
     "current": {
       "title": "Current Role",
-      "content": "A third year student pursuing an MEng in Robotics and Artificial Intelligence at University College London, with a specific interest in the ways in which we interact with AI and computer vision.",
+      "content": "A third year student pursuing an MEng in Robotics and Artificial Intelligence at <i>University College London</i>, with a particular interest in human-AI interaction and its broader social impact.",
       "color": "#5a0839",
       "position": { "x": 25, "y": 5 }
     },

@@ -6,7 +6,7 @@
       "id": 1,
       "name": "Protalab - Agentic AI Workflow for Automated 3D Printing",
       "dates": "2025",
-      "description": "Participated in a project with four of my peers in collaboration with Outshift by Cisco, to highlight agentic capabilities for real life solutions. We designed and implemented an agentic workflow using LangChain and LangGraph, enabling modular coordination of LLM-based agents for design generation, refinement, 3D printing and supervision.",
+      "description": "Participated in a project with four of my peers in collaboration with <b>Outshift by Cisco</b>, to highlight agentic capabilities for real life solutions. We designed and implemented an agentic workflow using LangChain and LangGraph, enabling modular coordination of LLM-based agents for design generation, refinement, 3D printing and supervision.",
       "technologies": ["LangGraph", "LangChain", "Prompt Engineering", "Angular.js"],
       "images": [],
       "externalLink": "https://www.linkedin.com/posts/damilola-ogunleye-8393a5287_you-cant-go-far-in-ai-circles-these-days-activity-7334187470013554689-WVYM?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEWlpG0By4THAEPdgB8epOltVGZsJ_wyr8Q" 
@@ -15,7 +15,7 @@
       "id": 2,
       "name": "UKSEDS Mars Rover Competition",
       "dates": "2025",
-      "description": "Designed and manufactured a tele-operated rover capable of navigating simulated Martian terrain and performing tasks such as traversing the terrain and capturing differe images. Ultimately, we secured 2nd place in the competition in addition to winning the 'Best Automation' award for our innovative use of automatic image capture and processing.",
+      "description": "Designed and manufactured a tele-operated rover capable of navigating simulated Martian terrain and performing tasks such as traversing the terrain and capturing different images. Ultimately, we secured 2nd place in the competition in addition to winning the 'Best Automation' award for our innovative use of automatic image capture and processing.",
       "technologies": ["Fusion360", "Ultimaker Cura", "Arduino", "Computer Vision"],
       "images": [],
       "externalLink": "" 
@@ -24,7 +24,7 @@
       "id": 3,
       "name": "Cartpole Control System (COMP0216)",
       "dates": "2025",
-      "description": "Designed, simulated, and physically implemented an inverted pendulum cartpole system as part of a team of four. Applied model-based systems engineering to guide development and implemented three advanced control strategies — PID, LQR with pole placement, and sliding mode control — benchmarked across custom Python and Gazebo simulations. The final prototype integrated a Kalman filter for state estimation and demonstrated real-time balancing using an embedded Arduino-based controller.",
+      "description": "Designed, simulated, and physically implemented an inverted pendulum cartpole system as part of a team of four. Applied model-based systems engineering to guide development and implemented three advanced control strategies - PID, LQR with pole placement, and sliding mode control - benchmarked across custom Python and Gazebo simulations. The final prototype integrated a Kalman filter for state estimation and demonstrated real-time balancing using an embedded Arduino-based controller.",
       "technologies": ["Fusion360", "Arduino", "Control Algorithms", "Embedded Systems"],
       "images": ["/assets/images/ProjectPics/CartPole.png"],
       "externalLink": ""
@@ -51,7 +51,7 @@
       "id": 6,
       "name": "Machine Learning for Classification and Regression (COMP0214)",
       "dates": "2024",
-      "description": "The first part, Analyzing Navigation Data for Alzheimer's Disease Detection, investigates the use of navigation patterns to differentiate individuals with Alzheimer's Disease (AD) from a control group. Binary Classification with sklearn was utilised to classify AD patients. The second part, WIFI Signal for Indoor Localisation, focuses on predicting indoor X-Y coordinates using Received Signal Strength Indicator (RSSI) values from Wi-Fi access points. A neural network was designed and trained using Pytorch to predict the X-Y coordinates accurately.",
+      "description": "<b>Analyzing Navigation Data for Alzheimer's Disease Detection</b>: An investigation into the use of navigation patterns to differentiate individuals with Alzheimer's Disease (AD) from a control group. Binary Classification with sklearn was utilised to classify AD patients. <b>WIFI Signal for Indoor Localisation</b>: This component of the coursework focused on predicting indoor X-Y coordinates using Received Signal Strength Indicator (RSSI) values from Wi-Fi access points. A neural network was designed and trained using Pytorch to predict the X-Y coordinates accurately.",
       "technologies": ["Machine Learning", "Neural Networks", "Pytorch", "scikit-learn", "Data Analysis"],
       "images": [],
       "externalLink": ""
