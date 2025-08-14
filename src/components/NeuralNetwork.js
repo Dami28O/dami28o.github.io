@@ -92,6 +92,13 @@ export class NeuralNetwork {
     this.renderer.domElement.style.left = '0'
     this.renderer.domElement.style.cursor = 'default'
     this.renderer.domElement.style.pointerEvents = 'auto'
+
+    // Rotation
+    this.isUserRotating = false
+    this.lastPointerX = 0
+    this.userRotationY = 0
+    this.autoRotationY = 0
+    this.lastInteractionTime = 0
     
     this.container.appendChild(this.renderer.domElement)
 
@@ -642,6 +649,46 @@ export class NeuralNetwork {
       
       this.listenersAdded = true
     }, 100)
+
+    // Mouse drag
+    this.renderer.domElement.addEventListener('mousedown', (e) => {
+      this.isUserRotating = true
+      this.lastPointerX = e.clientX
+      this.lastInteractionTime = Date.now()
+    })
+    window.addEventListener('mousemove', (e) => {
+      if (this.isUserRotating) {
+        const deltaX = e.clientX - this.lastPointerX
+        this.userRotationY += deltaX * 0.01
+        this.lastPointerX = e.clientX
+        this.lastInteractionTime = Date.now()
+      }
+    })
+    window.addEventListener('mouseup', () => {
+      this.isUserRotating = false
+    })
+
+    // Touch drag
+    this.renderer.domElement.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        this.isUserRotating = true
+        this.lastPointerX = e.touches[0].clientX
+        this.lastInteractionTime = Date.now()
+      }
+    })
+    window.addEventListener('touchmove', (e) => {
+      if (this.isUserRotating && e.touches.length === 1) {
+        const deltaX = e.touches[0].clientX - this.lastPointerX
+        this.userRotationY += deltaX * 0.01
+        this.lastPointerX = e.touches[0].clientX
+        this.lastInteractionTime = Date.now()
+      }
+    })
+    window.addEventListener('touchend', () => {
+      this.isUserRotating = false
+    })
+
+    this.listenersAdded = true
   }
 
   updateCursor() {
@@ -677,8 +724,17 @@ export class NeuralNetwork {
       return
     }
     
-    // Add subtle rotation
-    this.scene.rotation.y += 0.001
+    // // Add subtle rotation
+    // this.scene.rotation.y += 0.001
+
+    const now = Date.now()
+    const idle = now - this.lastInteractionTime > 100 // 100ms idle threshold
+
+    if (idle) {
+      this.autoRotationY += 0.001
+    }
+
+    this.scene.rotation.y = this.userRotationY + this.autoRotationY
     
     // Periodically ensure info nodes are visible (every 2 seconds)
     if (Date.now() % 2000 < 16) { // Roughly every 2 seconds
