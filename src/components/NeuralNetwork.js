@@ -85,6 +85,11 @@ export class NeuralNetwork {
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
     this.renderer.setSize(width, height)
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+    // Setup camera original position and target
+    this.originalCameraPosition = new THREE.Vector3(0, 0, 50)
+    this.camera.position.copy(this.originalCameraPosition)
+    this.cameraTarget = new THREE.Vector3(0, 0, 0)
     
     // Position canvas properly
     this.renderer.domElement.style.position = 'absolute'
@@ -351,20 +356,79 @@ export class NeuralNetwork {
       console.error('Bio data or section not available for:', infoType)
       return
     }
-    
-    // Simply hide any currently active info immediately - no transition
+
+    // Hide any currently active info
     if (this.activeInfo) {
       this.hideInfo()
     }
-    
+
     this.activeInfo = infoType
     const section = this.bioData.sections[infoType]
-    
-    // Light up existing connections that connect to nodes of this type
+
+    // Light up connections
     this.lightUpConnections(infoType, section.color)
-    
-    // Show the actual info text
-    this.showInfoText(section)
+
+    // --- Responsive: Use zoom-in for desktop, old overlay for mobile ---
+    const isMobile = window.innerWidth <= 768
+
+    if (isMobile) {
+      // Use the old version for mobile (show info at bottom)
+      this.showInfoText(section)
+      return
+    }
+
+    // --- Zoom in camera to the node ---
+    const nodeWorldPos = new THREE.Vector3()
+    activatingNode.getWorldPosition(nodeWorldPos)
+    const cameraTargetPos = nodeWorldPos.clone()
+    const cameraZoomPos = nodeWorldPos.clone().add(new THREE.Vector3(0, 0, 8)) // 8 units in front
+
+    this.animateCameraTo(cameraZoomPos, cameraTargetPos, 900)
+
+    // --- Show info as a centered overlay ---
+    let infoElement = document.querySelector('.info-display')
+    if (!infoElement) {
+      infoElement = document.createElement('div')
+      infoElement.className = 'info-display'
+      document.body.appendChild(infoElement)
+    }
+    infoElement.innerHTML = `
+      <h3 class="info-title">${section.title}</h3>
+      <p class="info-content">${section.content}</p>
+    `
+    infoElement.style.position = 'fixed'
+    infoElement.style.left = '50%'
+    infoElement.style.top = '50%'
+    infoElement.style.transform = 'translate(-50%, -50%) scale(1.1)'
+    infoElement.style.opacity = '0'
+    infoElement.style.transition = 'all 0.6s cubic-bezier(.4,2,.3,1)'
+    infoElement.style.display = 'block'
+    infoElement.style.zIndex = '1000'
+    infoElement.style.background = 'var(--bg-primary, #fff)'
+    infoElement.style.color = 'var(--text-primary, #222)'
+    infoElement.style.padding = '2rem'
+    infoElement.style.borderRadius = '1rem'
+    infoElement.style.boxShadow = '0 8px 32px rgba(0,0,0,0.18)'
+    infoElement.style.border = `2px solid ${section.color}`
+
+    infoElement.style.width = 'auto'
+    infoElement.style.maxWidth = '420px'
+    infoElement.style.minWidth = '180px'
+    infoElement.style.minHeight = 'unset'
+    infoElement.style.maxHeight = '70vh'
+    infoElement.style.overflowY = 'auto'
+    infoElement.style.wordBreak = 'break-word'
+    infoElement.style.whiteSpace = 'normal'
+
+    setTimeout(() => {
+      infoElement.style.opacity = '1'
+      infoElement.style.transform = 'translate(-50%, -50%) scale(1)'
+    }, 10)
+
+    // Close on overlay click only
+    infoElement.onclick = (e) => {
+      if (e.target === infoElement) this.hideInfo()
+    }
   }
 
   lightUpConnections(infoType, color) {
@@ -407,6 +471,14 @@ export class NeuralNetwork {
     
     // Clear active info immediately
     this.activeInfo = null
+
+    // Animate camera back to original position
+    this.animateCameraTo(this.originalCameraPosition, new THREE.Vector3(0,0,0), 900)
+    const infoElement = document.querySelector('.info-display')
+    if (infoElement) {
+      infoElement.style.opacity = '0'
+      setTimeout(() => infoElement.style.display = 'none', 600)
+    }
   }
 
   restoreConnectionColors() {
@@ -790,6 +862,30 @@ export class NeuralNetwork {
     this.animationId = requestAnimationFrame(() => this.animate())
     this.renderFrame()
   }
+
+  animateCameraTo(targetPosition, targetLookAt, duration = 1000) {
+  const startPos = this.camera.position.clone()
+  const startLook = this.cameraTarget.clone()
+  const endPos = targetPosition.clone()
+  const endLook = targetLookAt.clone()
+  const startTime = performance.now()
+
+  const animate = (now) => {
+    const elapsed = now - startTime
+    const t = Math.min(1, elapsed / duration)
+    // Ease in-out
+    const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t
+
+    this.camera.position.lerpVectors(startPos, endPos, ease)
+    this.cameraTarget.lerpVectors(startLook, endLook, ease)
+    this.camera.lookAt(this.cameraTarget)
+
+    if (t < 1) {
+      requestAnimationFrame(animate)
+    }
+  }
+  requestAnimationFrame(animate)
+}
 
   onWindowResize() {
     const mainContent = document.querySelector('.main-content')
