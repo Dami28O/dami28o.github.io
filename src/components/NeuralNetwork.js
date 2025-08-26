@@ -226,9 +226,10 @@ export class NeuralNetwork {
   }
 
   createConnections() {
+    // Doesnt actually work
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
     const connectionMaterial = new THREE.LineBasicMaterial({
-      color: isDark ? 0x555555 : 0x333333,
+      color: isDark ? 0x808080 : 0x808080,
       transparent: true,
       opacity: isDark ? 0.4 : 0.2
     })
