@@ -231,7 +231,7 @@ export class NeuralNetwork {
     const connectionMaterial = new THREE.LineBasicMaterial({
       color: isDark ? 0x808080 : 0x808080,
       transparent: true,
-      opacity: isDark ? 0.4 : 0.2
+      opacity: isDark ? 0.6 : 0.6
     })
 
     // Track which nodes have connections
