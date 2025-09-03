@@ -13,12 +13,12 @@
     },
     {
       "id": 2,
-      "name": "UKSEDS Mars Rover Competition",
+      "name": "UKSEDS Olympus Rover Trials",
       "dates": "2025",
-      "description": "Designed and manufactured a tele-operated rover capable of navigating simulated Martian terrain and performing tasks such as traversing the terrain and capturing different images. Ultimately, we secured 2nd place in the competition in addition to winning the 'Best Automation' award for our innovative use of automatic image capture and processing.",
+      "description": "Designed and manufactured a tracked robot rover equipped with a teleoperated, camera-mounted arm for navigating simulated Martian terrain. The rover was controlled via Wi-Fi from a custom mobile interface and featured autonomous QR code recognition and decoding, implemented using MicroPython and Computer Vision on the Nicla Vision Module. This innovative combination of teleoperation and automation earned us 2nd place in the competition and the 'Best Automation' award for our automatic image capture and processing system.",
       "technologies": ["Fusion360", "Ultimaker Cura", "Arduino", "Computer Vision"],
-      "images": [],
-      "externalLink": "" 
+      "images": ["/assets/images/ProjectPics/Marshgazers_CAD.png"],
+      "externalLink": "https://www.ucl.ac.uk/engineering/news/ucl-robotics-ai-students-triumph-national-mars-rover-challenge" 
     },
     {
       "id": 3,
