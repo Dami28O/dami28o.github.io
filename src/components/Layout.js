@@ -36,7 +36,7 @@ export class Layout {
         <header class="header">
           <div class="header-content">
             <h1 class="name">Damilola Ogunleye</h1>
-            <p class="role">Robotics & AI Engineer</p>
+            <p class="role">Robotics & ML Engineer</p>
           </div>
           <div class="theme-toggle-container"></div>
         </header>
