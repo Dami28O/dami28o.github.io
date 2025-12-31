@@ -1,8 +1,16 @@
 {
   "projects": [
-    
     {
       "id": 1,
+      "name": "InfluX - Social Trends Analytics Platform",
+      "dates": "2025",
+      "description": "Developed <b>InfluX</b>, a social trend intelligence platform that leverages Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) to surface real-time insights from social and search data. The system ingests data via AWS Strands and the Google Search API, with a FastAPI backend orchestrating retrieval, processing and analysis. Retrieved content is embedded using FAISS and clustered with HDBSCAN to identify emerging themes, which are then visualised as interactive graphs and summarised into clear, human-readable insights using an LLM. Built during the <b>AgentVerse Hackathon 2025</b>, the project was awarded <b>2nd place</b> for its novel approach to trend discovery and analysis.",
+      "technologies": ["AWS Strands", "FastAPI", "RAG", "Python", "Vue.js"],
+      "images": ["/assets/images/ProjectPics/InfluX.png"],
+      "externalLink": "https://devpost.com/software/influx-ztcyp4"
+    },
+    {
+      "id": 2,
       "name": "Àgbẹ̀ - Autonomous Agricultural Robot for Precision Seeding",
       "dates": "2025",
       "description": "During a 6-week internship with the <b>National Center for Artificial Intelligence and Robotics</b> in Abuja, Nigeria, I prototyped a modular agricultural robot equipped with Wi-Fi monitoring. The system integrates seed-dispensing and furrow-opening mechanisms, and leverages GPS-IMU-Encoder sensor fusion through a Kalman filter for precise navigation. To enhance usability and scalability, I designed a modular interface for different field tasks and implemented ESP8266-based wireless telemetry for real-time monitoring and diagnostics, resulting in improved planting accuracy and throughput compared to traditional methods.",
@@ -11,7 +19,7 @@
       "externalLink": "https://github.com/Dami28O/NCAIR-AutonomousSeeding/tree/main"
     },
     {
-      "id": 2,
+      "id": 3,
       "name": "Protalab - Agentic AI Workflow for Automated 3D Printing",
       "dates": "2025",
       "description": "Participated in a project with four of my peers in collaboration with <b>Outshift by Cisco</b>, to highlight agentic capabilities for real life solutions. We designed and implemented an agentic workflow using LangChain and LangGraph, enabling modular coordination of LLM-based agents for design generation, refinement, 3D printing and supervision.",
@@ -20,7 +28,7 @@
       "externalLink": "https://www.linkedin.com/posts/damilola-ogunleye-8393a5287_you-cant-go-far-in-ai-circles-these-days-activity-7334187470013554689-WVYM?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEWlpG0By4THAEPdgB8epOltVGZsJ_wyr8Q" 
     },
     {
-      "id": 3,
+      "id": 4,
       "name": "UKSEDS Olympus Rover Trials",
       "dates": "2025",
       "description": "Designed and manufactured a tracked robot rover equipped with a teleoperated, camera-mounted arm for navigating simulated Martian terrain. The rover was controlled via Wi-Fi from a custom mobile interface and featured autonomous QR code recognition and decoding, implemented using MicroPython and Computer Vision on the Nicla Vision Module. This innovative combination of teleoperation and automation earned us 2nd place in the competition and the 'Best Automation' award for our automatic image capture and processing system.",
@@ -29,7 +37,7 @@
       "externalLink": "https://www.ucl.ac.uk/engineering/news/ucl-robotics-ai-students-triumph-national-mars-rover-challenge" 
     },
     {
-      "id": 4,
+      "id": 5,
       "name": "Cartpole Control System (COMP0216)",
       "dates": "2025",
       "description": "Designed, simulated, and physically implemented an inverted pendulum cartpole system as part of a team of four. Applied model-based systems engineering to guide development and implemented three advanced control strategies - PID, LQR with pole placement, and sliding mode control - benchmarked across custom Python and Gazebo simulations. The final prototype integrated a Kalman filter for state estimation and demonstrated real-time balancing using an embedded Arduino-based controller.",
@@ -38,7 +46,7 @@
       "externalLink": ""
     },
     {
-      "id": 5,
+      "id": 6,
       "name": "Robotic Gripper Simulation and Grasp Success Prediction with Machine Learning (COMP0213)",
       "dates": "2024",
       "description": "Created a robotic gripper simulation tool using Python and PyBullet, capable of generating grasp data and evaluating grasp success for multiple gripper types and objects. Key features include realistic physics simulation, customizable parameters, automated success/failure evaluation, and random approach angle generation. Implemented success prediction using machine learning techniques, such as Logistic Regression, Support Vector Machines and Multilayer Perceptron",
@@ -47,16 +55,16 @@
       "externalLink": ""
     },
     {
-      "id": 6,
+      "id": 7,
       "name": "Spotlight - First Place Project at Google Black Googler Network Hackathon",
       "dates": "2024",
       "description": "Participated in Google's BGN Hackathon and developed a web application that highlights Black innovators in engineering, securing both 1st place and 'People's Choice' awards. The application incorporated Google Cloud Vision AI for real-time object detection and the Gemini API for contextual information, utilizing Cloud Storage Triggers for automated image processing.",
       "technologies": ["Gemini API", "Prompt Engineering", "Computer Vision", "Google Cloud Platform"],
       "images": [],
-      "externalLink": "https://www.linkedin.com/posts/damilola-ogunleye-8393a5287_spotlight-gemini-bgn-activity-7252070138533793792-oNEc?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEWlpG0By4THAEPdgB8epOltVGZsJ_wyr8Q"
+      "externalLink": "https://github.com/jalliet/spotlight"
     },
     {
-      "id": 7,
+      "id": 8,
       "name": "Machine Learning for Classification and Regression (COMP0214)",
       "dates": "2024",
       "description": "<b>Analyzing Navigation Data for Alzheimer's Disease Detection</b>: An investigation into the use of navigation patterns to differentiate individuals with Alzheimer's Disease (AD) from a control group. Binary Classification with sklearn was utilised to classify AD patients. <b>WIFI Signal for Indoor Localisation</b>: This component of the coursework focused on predicting indoor X-Y coordinates using Received Signal Strength Indicator (RSSI) values from Wi-Fi access points. A neural network was designed and trained using Pytorch to predict the X-Y coordinates accurately.",
@@ -65,7 +73,7 @@
       "externalLink": ""
     },
     {
-      "id": 8,
+      "id": 9,
       "name": "Sign Language Fingerspelling Recognition with Computer Vision",
       "dates": "2024",
       "description": "This project is an application designed to recognise and translate ASL (American Sign Language) fingerspelling into corresponding text. It leverages machine learning and computer vision techniques, drawing inspiration from personal experiences with sign language and DeepMind's Project Euphonia, which uses AI to restore speech for individuals with communication difficulties like those with ALS. The application utilises an MLP (Multilayer Perceptron) model built with TensorFlow, which processes hand landmarks obtained from Google's MediaPipe open-source framework. This trained model then classifies and translates ASL fingerspelling gestures in real-time.",
