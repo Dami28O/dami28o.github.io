@@ -65,7 +65,7 @@ export class Projects {
     requestAnimationFrame(() => {
       page.classList.add('page-enter-active')
     })
-    
+
     return page
   }
 

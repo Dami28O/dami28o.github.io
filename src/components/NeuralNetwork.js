@@ -443,6 +443,16 @@ export class NeuralNetwork {
     this.startPeriodicPulses()
   }
 
+  stopPeriodicPulses() {
+    if (this.pulseInterval) {
+      clearInterval(this.pulseInterval)
+      this.pulseInterval = null
+    }
+    // Hide and reclaim any in-flight pulses immediately
+    this.pulses.forEach(p => { p.mesh.visible = false })
+    this.pulses = []
+  }
+
   createBioConnections() {
     const isHomePage = !window.location.hash || window.location.hash === '#'
     

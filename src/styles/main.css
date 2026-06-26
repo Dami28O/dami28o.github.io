@@ -777,3 +777,151 @@ body {
     opacity: 0.7;
   }
 }
+
+/* ============================================================
+   Stick Figure Mascot
+   ============================================================ */
+
+/* The body and thighs run to y=60 (SVG bottom edge). With bottom:1rem the
+   SVG bottom sits on the layout-frame border, so the torso meets the line.
+   Lower legs overflow the SVG bounds and dangle into the 1rem gap below. */
+.stickfigure-wrapper {
+  position: fixed;
+  bottom: var(--spacing-sm);
+  left: 2.5rem;
+  z-index: 8;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.stickfigure-wrapper.stickfigure-visible {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .stickfigure-wrapper { display: none; }
+}
+
+.sf-svg {
+  width: 55px;
+  height: 60px;
+  overflow: visible; /* lower legs dangle below the border into the 1rem gap */
+}
+
+.sf-svg-wide { width: 70px; }
+
+.sf-shape {
+  stroke: var(--text-secondary);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  fill: none;
+}
+
+/* ── LOWER LEGS: kick from the knee joint ─────────────────────────────
+   Left lower leg: (10,60)→(7,75). BBox x:[7,10] y:[60,75].
+   Knee (10,60) = right-top corner = (100%, 0%).
+   Right lower leg: (50,60)→(53,75). BBox x:[50,53] y:[60,75].
+   Knee (50,60) = left-top corner = (0%, 0%).
+   Legs swing together (both kick inward simultaneously).               */
+.sf-left-leg {
+  transform-box: fill-box;
+  transform-origin: 100% 0%;
+  animation: sf-kick-l 2.6s ease-in-out infinite;
+}
+
+.sf-right-leg {
+  transform-box: fill-box;
+  transform-origin: 0% 0%;
+  animation: sf-kick-r 2.6s ease-in-out infinite;
+}
+
+@keyframes sf-kick-l {
+  0%, 100% { transform: rotate(0deg); }
+  40%      { transform: rotate(22deg);  animation-timing-function: ease-out; }
+  65%      { transform: rotate(22deg);  animation-timing-function: ease-in; }
+}
+
+@keyframes sf-kick-r {
+  0%, 100% { transform: rotate(0deg); }
+  40%      { transform: rotate(-22deg); animation-timing-function: ease-out; }
+  65%      { transform: rotate(-22deg); animation-timing-function: ease-in; }
+}
+
+/* ── HOME: pointing arm ──────────────────────────────────────────────
+   Absolute SVG coords, no SVG transform attribute.
+   Line (30,30)→(44,10): BBox x:[30,44] y:[10,30].
+   Joint (30,30) = left-bottom = (0%,100%).                            */
+.sf-point-arm {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: sf-point 3.7s ease-in-out infinite;
+}
+
+/* Anticipation dip → spring up → hold at point → swing back → settle */
+@keyframes sf-point {
+  0%   { transform: rotate(0deg);   animation-timing-function: ease-in; }
+  12%  { transform: rotate(15deg);  animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+  38%  { transform: rotate(-28deg); animation-timing-function: ease-out; }
+  58%  { transform: rotate(-24deg); animation-timing-function: ease-in; }
+  80%  { transform: rotate(5deg);   animation-timing-function: ease-out; }
+  100% { transform: rotate(0deg); }
+}
+
+/* ── PROJECTS: forearm rocks at elbow ───────────────────────────────
+   Absolute coords. Line (16,46)→(26,24): BBox x:[16,26] y:[24,46].
+   Joint (16,46) = left-bottom = (0%,100%).                           */
+.sf-think-forearm {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: sf-think 3.2s ease-in-out infinite;
+}
+
+@keyframes sf-think {
+  0%, 100% { transform: rotate(0deg); }
+  40%      { transform: rotate(10deg); }
+  60%      { transform: rotate(10deg); }
+}
+
+.sf-thought { opacity: 0; }
+
+.sf-thought-1 { animation: sf-thought-pulse 2.6s ease-in-out infinite 0s; }
+.sf-thought-2 { animation: sf-thought-pulse 2.6s ease-in-out infinite 0.32s; }
+.sf-thought-3 { animation: sf-thought-pulse 2.6s ease-in-out infinite 0.64s; }
+
+@keyframes sf-thought-pulse {
+  0%, 100% { opacity: 0.1; }
+  50%      { opacity: 0.7; }
+}
+
+/* ── CONTACT: phone arm raises and presents ─────────────────────────
+   Group with no SVG transform. Absolute coords.
+   Combined BBox x:[30,65] y:[2,30] → joint (30,30) = (0%,100%).     */
+.sf-phone-arm {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: sf-phone-raise 4.2s ease-in-out infinite;
+}
+
+@keyframes sf-phone-raise {
+  0%   { transform: rotate(0deg);   animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+  30%  { transform: rotate(-15deg); animation-timing-function: ease-out; }
+  55%  { transform: rotate(-12deg); animation-timing-function: ease-in; }
+  100% { transform: rotate(0deg); }
+}
+
+.sf-signal {
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0;
+}
+
+.sf-signal-1 { animation: sf-signal-pulse 2.2s ease-in-out infinite 0s; }
+.sf-signal-2 { animation: sf-signal-pulse 2.2s ease-in-out infinite 0.38s; }
+
+@keyframes sf-signal-pulse {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 0.75; }
+}

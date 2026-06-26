@@ -104,13 +104,16 @@ export class Router {
     // Handle neural network interactivity based on page
     if (window.portfolioLayout?.neuralNetwork) {
       if (isHomePage) {
-        // Re-enable neural network interactivity on home page
+        // Re-enable neural network interactivity and pulses on home page
         setTimeout(() => {
           if (window.portfolioLayout.neuralNetwork.forceSetupEventListeners) {
             window.portfolioLayout.neuralNetwork.forceSetupEventListeners()
           }
           if (window.portfolioLayout.neuralNetwork.createBioConnections) {
             window.portfolioLayout.neuralNetwork.createBioConnections()
+          }
+          if (window.portfolioLayout.neuralNetwork.resetPulseInterval) {
+            window.portfolioLayout.neuralNetwork.resetPulseInterval()
           }
         }, 100)
       } else {
@@ -121,6 +124,10 @@ export class Router {
         // Clear any listeners to ensure non-interactivity
         if (window.portfolioLayout.neuralNetwork.disableInteractivity) {
           window.portfolioLayout.neuralNetwork.disableInteractivity()
+        }
+        // Stop pulses — they only belong on the home page
+        if (window.portfolioLayout.neuralNetwork.stopPeriodicPulses) {
+          window.portfolioLayout.neuralNetwork.stopPeriodicPulses()
         }
       }
     }

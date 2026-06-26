@@ -59,7 +59,7 @@ export class Contact {
     requestAnimationFrame(() => {
       page.classList.add('page-enter-active')
     })
-    
+
     return page
   }
 
