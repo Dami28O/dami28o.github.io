@@ -37,7 +37,13 @@ export class NeuralNetwork {
     // Animation and lifecycle
     this.animationId = null
     this.backupTimer = null
-    
+
+    // Signal pulse system
+    this.pulses = []
+    this.pulsePool = []
+    this.pulseInterval = null
+
+
     this.init()
   }
 
@@ -46,11 +52,13 @@ export class NeuralNetwork {
     await this.loadBioData()
     this.createNodes()
     this.createConnections()
+    this.createPulsePool()
     this.setupEventListeners()
-    
+
     // Apply mobile adjustments if needed
     this.adjustForMobile()
-    
+
+    this.startPeriodicPulses()
     this.animate()
   }
 
@@ -109,7 +117,7 @@ export class NeuralNetwork {
 
     // Event listeners
     window.addEventListener('resize', () => this.onWindowResize())
-    
+
     // Handle page visibility to maintain animation during focus changes
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
@@ -310,6 +318,131 @@ export class NeuralNetwork {
     this.connections.push(connection)
   }
 
+  createPulsePool(size = 80) {
+    const geometry = new THREE.SphereGeometry(0.12, 8, 8)
+    for (let i = 0; i < size; i++) {
+      const material = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0,
+      })
+      const mesh = new THREE.Mesh(geometry, material)
+      mesh.visible = false
+      this.scene.add(mesh)
+      this.pulsePool.push(mesh)
+    }
+  }
+
+  acquirePulse() {
+    return this.pulsePool.find(p => !p.visible) || null
+  }
+
+  triggerPulseCascade(originNode, color, depth = 0, maxDepth = 3, fromNode = null) {
+    if (depth >= maxDepth) return
+    if (this.pulses.length > 70) return
+
+    // Ensure pulses are bright enough to be visible regardless of bio section color
+    const visibleColor = color.clone()
+    const hsl = {}
+    visibleColor.getHSL(hsl)
+    if (hsl.l < 0.45) {
+      visibleColor.setHSL(hsl.h, Math.min(1, hsl.s + 0.2), 0.6)
+    }
+
+    const nodeConnections = this.connections.filter(c =>
+      c.userData.nodeA === originNode || c.userData.nodeB === originNode
+    )
+
+    nodeConnections.forEach(connection => {
+      const targetNode = connection.userData.nodeA === originNode
+        ? connection.userData.nodeB
+        : connection.userData.nodeA
+
+      if (targetNode === fromNode) return
+
+      const pulse = this.acquirePulse()
+      if (!pulse) return
+
+      const baseOpacity = Math.max(0.1, 0.85 - depth * 0.25)
+      pulse.material.color.copy(visibleColor)
+      pulse.material.opacity = baseOpacity
+      pulse.visible = true
+      pulse.position.copy(originNode.position)
+
+      this.pulses.push({
+        mesh: pulse,
+        nodeA: originNode,
+        nodeB: targetNode,
+        progress: 0,
+        speed: 0.016 + Math.random() * 0.014,
+        color: visibleColor.clone(),
+        baseOpacity,
+        depth,
+        maxDepth,
+        targetNode,
+        fromNode: originNode,
+      })
+    })
+  }
+
+  updatePulses() {
+    const completed = []
+
+    this.pulses.forEach(pulse => {
+      pulse.progress += pulse.speed
+
+      if (pulse.progress >= 1) {
+        pulse.mesh.visible = false
+        completed.push(pulse)
+
+        if (pulse.depth + 1 < pulse.maxDepth) {
+          this.triggerPulseCascade(
+            pulse.targetNode,
+            pulse.color,
+            pulse.depth + 1,
+            pulse.maxDepth,
+            pulse.fromNode
+          )
+        }
+      } else {
+        pulse.mesh.position.lerpVectors(
+          pulse.nodeA.position,
+          pulse.nodeB.position,
+          pulse.progress
+        )
+        // Fade out in the final 20% of travel
+        if (pulse.progress > 0.8) {
+          pulse.mesh.material.opacity = pulse.baseOpacity * (1 - (pulse.progress - 0.8) / 0.2)
+        }
+      }
+    })
+
+    this.pulses = this.pulses.filter(p => !completed.includes(p))
+  }
+
+  startPeriodicPulses() {
+    this.pulseInterval = setInterval(() => {
+      const infoTypes = Object.keys(this.infoNodes)
+      if (infoTypes.length === 0) return
+
+      const randomType = infoTypes[Math.floor(Math.random() * infoTypes.length)]
+      const nodes = this.infoNodes[randomType]
+      if (!nodes || nodes.length === 0) return
+
+      const randomNode = nodes[Math.floor(Math.random() * nodes.length)]
+      if (!randomNode.userData.infoColor) return
+
+      this.triggerPulseCascade(randomNode, randomNode.userData.infoColor.clone(), 0, 3)
+    }, 5000)
+  }
+
+  resetPulseInterval() {
+    if (this.pulseInterval) {
+      clearInterval(this.pulseInterval)
+    }
+    this.startPeriodicPulses()
+  }
+
   createBioConnections() {
     const isHomePage = !window.location.hash || window.location.hash === '#'
     
@@ -366,8 +499,11 @@ export class NeuralNetwork {
     this.activeInfo = infoType
     const section = this.bioData.sections[infoType]
 
-    // Light up connections
+    // Light up connections and fire signal pulses; reset timer so auto-pulses
+    // don't fire immediately after a manual interaction
     this.lightUpConnections(infoType, section.color)
+    this.triggerPulseCascade(activatingNode, new THREE.Color(section.color), 0, 4)
+    this.resetPulseInterval()
 
     // --- Responsive: Use zoom-in for desktop, old overlay for mobile ---
     const isMobile = window.innerWidth <= 768
@@ -855,7 +991,10 @@ export class NeuralNetwork {
     
     // Animate highlighted connections with a subtle pulse
     this.animateHighlightedConnections()
-    
+
+    // Advance signal pulses
+    this.updatePulses()
+
     this.renderer.render(this.scene, this.camera)
   }
 
@@ -896,7 +1035,6 @@ export class NeuralNetwork {
     this.camera.aspect = width / height
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(width, height)
-    
     // Adjust camera and node scales for mobile
     this.adjustForMobile()
   }
@@ -923,7 +1061,11 @@ export class NeuralNetwork {
     if (this.backupTimer) {
       clearInterval(this.backupTimer)
     }
-    
+
+    if (this.pulseInterval) {
+      clearInterval(this.pulseInterval)
+    }
+
     // Clean up Three.js objects
     if (this.scene) {
       this.scene.traverse((object) => {
