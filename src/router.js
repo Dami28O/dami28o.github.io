@@ -91,6 +91,7 @@ export class Router {
     
     // Manage both page and main content z-index for neural network interaction
     const isHomePage = route === ''
+    const isProjectsPage = route === 'projects'
     const pageElement = main.querySelector('.page')
     
     if (isHomePage) {
@@ -103,32 +104,23 @@ export class Router {
     
     // Handle neural network interactivity based on page
     if (window.portfolioLayout?.neuralNetwork) {
+      // Pulses: enabled on home and contact, disabled on projects.
+      // disablePulses() sets a flag checked every render frame — no timer races.
+      if (isProjectsPage) {
+        window.portfolioLayout.neuralNetwork.disablePulses?.()
+      } else {
+        window.portfolioLayout.neuralNetwork.enablePulses?.()
+      }
+
       if (isHomePage) {
-        // Re-enable neural network interactivity and pulses on home page
+        // Re-enable neural network interactivity on home page
         setTimeout(() => {
-          if (window.portfolioLayout.neuralNetwork.forceSetupEventListeners) {
-            window.portfolioLayout.neuralNetwork.forceSetupEventListeners()
-          }
-          if (window.portfolioLayout.neuralNetwork.createBioConnections) {
-            window.portfolioLayout.neuralNetwork.createBioConnections()
-          }
-          if (window.portfolioLayout.neuralNetwork.resetPulseInterval) {
-            window.portfolioLayout.neuralNetwork.resetPulseInterval()
-          }
+          window.portfolioLayout.neuralNetwork.forceSetupEventListeners?.()
+          window.portfolioLayout.neuralNetwork.createBioConnections?.()
         }, 100)
       } else {
-        // Hide any active bio info when leaving home page
-        if (window.portfolioLayout.neuralNetwork.hideInfo) {
-          window.portfolioLayout.neuralNetwork.hideInfo()
-        }
-        // Clear any listeners to ensure non-interactivity
-        if (window.portfolioLayout.neuralNetwork.disableInteractivity) {
-          window.portfolioLayout.neuralNetwork.disableInteractivity()
-        }
-        // Stop pulses — they only belong on the home page
-        if (window.portfolioLayout.neuralNetwork.stopPeriodicPulses) {
-          window.portfolioLayout.neuralNetwork.stopPeriodicPulses()
-        }
+        window.portfolioLayout.neuralNetwork.hideInfo?.()
+        window.portfolioLayout.neuralNetwork.disableInteractivity?.()
       }
     }
   }

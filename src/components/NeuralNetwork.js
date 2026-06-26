@@ -42,6 +42,7 @@ export class NeuralNetwork {
     this.pulses = []
     this.pulsePool = []
     this.pulseInterval = null
+    this.pulsesEnabled = true
 
 
     this.init()
@@ -338,6 +339,7 @@ export class NeuralNetwork {
   }
 
   triggerPulseCascade(originNode, color, depth = 0, maxDepth = 3, fromNode = null) {
+    if (!this.pulsesEnabled) return
     if (depth >= maxDepth) return
     if (this.pulses.length > 70) return
 
@@ -386,6 +388,11 @@ export class NeuralNetwork {
   }
 
   updatePulses() {
+    if (!this.pulsesEnabled) {
+      this.pulses.forEach(p => { p.mesh.visible = false })
+      this.pulses = []
+      return
+    }
     const completed = []
 
     this.pulses.forEach(pulse => {
@@ -443,14 +450,17 @@ export class NeuralNetwork {
     this.startPeriodicPulses()
   }
 
-  stopPeriodicPulses() {
+  enablePulses() {
+    this.pulsesEnabled = true
+    this.resetPulseInterval()
+  }
+
+  disablePulses() {
+    this.pulsesEnabled = false
     if (this.pulseInterval) {
       clearInterval(this.pulseInterval)
       this.pulseInterval = null
     }
-    // Hide and reclaim any in-flight pulses immediately
-    this.pulses.forEach(p => { p.mesh.visible = false })
-    this.pulses = []
   }
 
   createBioConnections() {
@@ -509,8 +519,6 @@ export class NeuralNetwork {
     this.activeInfo = infoType
     const section = this.bioData.sections[infoType]
 
-    // Light up connections and fire signal pulses; reset timer so auto-pulses
-    // don't fire immediately after a manual interaction
     this.lightUpConnections(infoType, section.color)
     this.triggerPulseCascade(activatingNode, new THREE.Color(section.color), 0, 4)
     this.resetPulseInterval()
