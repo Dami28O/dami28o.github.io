@@ -2,6 +2,34 @@
   "projects": [
     {
       "id": 1,
+      "name": "Wearable Knee Exoskeleton for Sit-to-Stand Assistance",
+      "dates": "2025–2026",
+      "group": "Robotic Systems",
+      "description": "Collaborated in a team of 5 over eight months to design, prototype and evaluate a wearable knee exoskeleton for assisting <b>sit-to-stand (STS)</b> transitions. The project began with an extensive literature review covering biomechanics, soft exoskeletons, <b>Twisted String Actuators (TSAs)</b>, reinforcement learning, and human-robot interaction before progressing through system design, hardware prototyping, simulation and experimental validation. My primary contribution focused on the simulation and control framework. I assisted in developing a <b>MyoSuite</b>/<b>MuJoCo</b>-based musculoskeletal simulation of the STS movement using a four-phase reflex controller (momentum lean, seat-off, extension and stabilisation), enabling realistic lower-body motion. I also modelled a physics-based <b>Twisted String Actuator (TSA)</b> with nonlinear contraction geometry, motor speed-torque dynamics, cable slack detection and RK4 numerical integration before integrating it into the simulation as an assistive knee torque source. To optimise assistance, I implemented <b>Proximal Policy Optimisation (PPO)</b> using Stable-Baselines3, jointly learning TSA string length and staggered motor activation timings through a reward function balancing quadriceps muscle reduction, trajectory tracking, movement stability and completion time. The optimised policy achieved a <b>10% reduction in quadriceps muscle activation</b> compared to the unassisted baseline. I also developed the real-time intention detection pipeline running on a Raspberry Pi, where IMU data from an <b>ICM-20948</b> sensor was fused using a <b>Madgwick filter</b> and processed by a rule-based finite state machine (FSM) that robustly detected STS initiation with <b>84.38%</b> accuracy from trunk kinematics using orientation, angular velocity, acceleration, temporal gating and cooldown constraints to minimise false activations.",
+      "technologies": [
+        "Python",
+        "MuJoCo",
+        "MyoSuite",
+        "Stable-Baselines3",
+        "Proximal Policy Optimisation (PPO)",
+        "Reinforcement Learning",
+        "Embedded Systems"
+      ],
+      "images": ["/assets/images/ProjectPics/ExoSuit_v4.png"],
+      "externalLink": "https://github.com/Dami28O/COMP0225-Exoskeleton"
+    },
+    {
+      "id": 2,
+      "name": "Multi-Modal SLAM: Visual Odometry & LiDAR Mapping (COMP0222)",
+      "dates": "2026",
+      "group": "AI Applications",
+      "description": "Developed a multi-modal <b>Simultaneous Localisation and Mapping (SLAM)</b> system as part of the UCL COMP0222 coursework, combining visual and LiDAR-based approaches to reconstruct environments and estimate trajectories in real time. For visual SLAM, a continuous stream of RGB frames was captured using an <b>Intel RealSense D455</b> depth camera and processed through both <b>COLMAP</b> (Structure-from-Motion) and <b>ORB-SLAM2</b> pipelines; frames were extracted at 5 fps and 10 fps respectively, with trajectories exported in TUM format and quantitatively evaluated using <b>evo</b> (APE and RPE metrics). COLMAP leveraged a FAISS-indexed vocabulary tree for scalable image retrieval and feature matching across keyframes. For 2D LiDAR SLAM, scan data was collected on an <b>RPLIDAR A2M12</b> and aligned incrementally using a <b>point-to-plane ICP</b> scan-to-local-map formulation, with loop closure detected via a two-stage pipeline: spatial proximity filtering followed by a rotation-invariant range histogram descriptor compared using chi-squared distance, verified by ICP inlier ratio before committing a pose-graph edge. An occupancy grid map was built in parallel from the same LiDAR scans to produce a probabilistic 2D floor plan of the environment.",
+      "technologies": ["COLMAP", "ORB-SLAM2", "Python", "RPLIDAR A2M12", "Intel RealSense D455"],
+      "images": ["/assets/images/ProjectPics/colmap-hw.png"],
+      "externalLink": ""
+    },
+    {
+      "id": 3,
       "name": "InfluX - Social Trends Analytics Platform",
       "dates": "2025",
       "group": "AI Applications",
@@ -11,7 +39,7 @@
       "externalLink": "https://devpost.com/software/influx-ztcyp4"
     },
     {
-      "id": 2,
+      "id": 4,
       "name": "Àgbẹ̀ - Autonomous Agricultural Robot for Precision Seeding",
       "dates": "2025",
       "group": "Robotic Systems",
@@ -21,7 +49,7 @@
       "externalLink": "https://github.com/Dami28O/NCAIR-AutonomousSeeding/tree/main"
     },
     {
-      "id": 3,
+      "id": 5,
       "name": "Protalab - Agentic AI Workflow for Automated 3D Printing",
       "dates": "2025",
       "group": "AI Applications",
@@ -31,7 +59,7 @@
       "externalLink": "https://www.linkedin.com/posts/damilola-ogunleye-8393a5287_you-cant-go-far-in-ai-circles-these-days-activity-7334187470013554689-WVYM?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEWlpG0By4THAEPdgB8epOltVGZsJ_wyr8Q" 
     },
     {
-      "id": 4,
+      "id": 6,
       "name": "UKSEDS Olympus Rover Trials Basic Stream",
       "dates": "2025",
       "group": "Robotic Systems",
@@ -41,7 +69,7 @@
       "externalLink": "https://www.ucl.ac.uk/engineering/news/ucl-robotics-ai-students-triumph-national-mars-rover-challenge" 
     },
     {
-      "id": 5,
+      "id": 7,
       "name": "Cartpole Control System (COMP0216)",
       "dates": "2025",
       "group": "Robotic Systems",
@@ -51,7 +79,7 @@
       "externalLink": ""
     },
     {
-      "id": 6,
+      "id": 8,
       "name": "Robotic Gripper Simulation and Grasp Success Prediction with Machine Learning (COMP0213)",
       "dates": "2024",
       "group": "AI Applications",
@@ -61,7 +89,7 @@
       "externalLink": ""
     },
     {
-      "id": 7,
+      "id": 9,
       "name": "Spotlight - First Place Project at Google Black Googler Network Hackathon",
       "dates": "2024",
       "group": "AI Applications",
@@ -71,7 +99,7 @@
       "externalLink": "https://github.com/jalliet/spotlight"
     },
     {
-      "id": 8,
+      "id": 10,
       "name": "Machine Learning for Classification and Regression (COMP0214)",
       "dates": "2024",
       "group": "AI Applications",
@@ -81,7 +109,7 @@
       "externalLink": ""
     },
     {
-      "id": 9,
+      "id": 11,
       "name": "Sign Language Fingerspelling Recognition with Computer Vision",
       "dates": "2024",
       "group": "AI Applications",

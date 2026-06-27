@@ -10,7 +10,7 @@
     },
     "current": {
       "title": "Current Role",
-      "content": "A third year student pursuing an MEng in Robotics and Artificial Intelligence at <i>University College London</i>, with a particular interest in human-AI interaction and its broader social impact.",
+      "content": "A fourth year student pursuing an MEng in Robotics and Artificial Intelligence at <i>University College London</i>, with a particular interest in human-AI interaction and its broader social impact.",
       "color": "#5a0839",
       "position": { "x": 25, "y": 5 }
     },
@@ -22,7 +22,7 @@
     },
     "skills": {
       "title": "Core Skills",
-      "content": "Machine Learning • Autonomous Systems • Computer Vision • Python • LangGraph • CAD",
+      "content": "Machine Learning • Autonomous Systems • Computer Vision • Python • PyTorch • LangGraph • CAD",
       "color": "#96ceb4",
       "position": { "x": 20, "y": -5 }
     }
