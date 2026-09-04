@@ -2,6 +2,42 @@
   "projects": [
     {
       "id": 1,
+      "name": "Autonomous Swarm Robotics for Nuclear Decommissioning - Google DeepMind",
+      "dates": "2026",
+      "group": "Robotic Systems",
+      "description": "Completed an eight-week research internship through the <b>Google DeepMind Research Ready Programme</b> in collaboration with the University of York, developing an autonomous swarm robotics system for nuclear decommissioning. Built a <b>ROS 2 Jazzy</b> and <b>Gazebo</b> simulation environment for TurtleBot3 robots, working alongside the team on the Cache Consensus decentralised coordination algorithm for autonomous waste clustering. I contributed to the integration and validation of the autonomy stack across simulation and physical hardware, evaluating the sim-to-real gap and system behaviour under real-world deployment.<br><br>I led the design and data collection for a computer vision pipeline targeting nuclear waste classification and localisation, overseeing the fine-tuning of a <b>YOLOv8</b> object detector and implementing ground-plane homography to convert image detections into spatial coordinates. The project also investigated the safety assurance of autonomous ML-enabled robotic systems, combining <b>RoboStar</b> principles for robotics software and control with <b>AMLAS</b> for ML assurance. I applied these methodologies to support the verification, robustness and safety assurance of the overall system.",
+      "technologies": [
+        "Python",
+        "ROS 2",
+        "Gazebo",
+        "TurtleBot3",
+        "YOLOv8",
+        "Computer Vision",
+        "RoboStar",
+        "AMLAS"
+      ],
+      "images": ["/assets/images/ProjectPics/gdmrr.jpeg"],
+      "externalLink": "https://github.com/UoY-RoboStar/GoogleDeepMind2026"
+    },
+    {
+      "id": 2,
+      "name": "UKSEDS Olympus Rover Trials Advanced Stream",
+      "dates": "2025-2026",
+      "group": "Robotic Systems",
+      "description": "Competed in the <b>UKSEDS Olympus Rover Trials – Advanced Stream</b>, developing a rover capable of autonomously navigating a planetary-style environment and collecting regolith samples. Over nine months, I led the autonomy subteam, overseeing the development and integration of the rover's software and perception systems. <br></br> We developed a ROS 2-based autonomous navigation stack integrating LiDAR and RGB-D camera data for perception, with <b>Nav2</b> used for autonomous navigation and motion planning. The team also developed a Gazebo simulation environment to enable early testing and iterative development before deployment to physical hardware. A key engineering challenge was optimising the autonomy stack for resource-constrained deployment on an NVIDIA Jetson Orin Nano and custom PCB, where the system successfully operated during the competition. <br></br> As Autonomy Subteam Lead, I coordinated software development with the mechanical and electrical teams, delegated technical work and drove architectural decisions through iterative performance evaluation. This involved balancing algorithmic performance, hardware limitations and system-level integration requirements to deliver a functioning autonomous rover within the competition timeline.",
+      "technologies": [
+        "ROS 2",
+        "Gazebo",
+        "Python",
+        "LiDAR",
+        "Depth Camera",
+        "Computer Vision"
+      ],
+      "images": ["/assets/images/ProjectPics/marshgazers_adv.jpg"],
+      "externalLink": ""
+    },
+    {
+      "id": 3,
       "name": "Wearable Knee Exoskeleton for Sit-to-Stand Assistance",
       "dates": "2025–2026",
       "group": "Robotic Systems",
@@ -19,7 +55,7 @@
       "externalLink": "https://github.com/Dami28O/COMP0225-Exoskeleton"
     },
     {
-      "id": 2,
+      "id": 4,
       "name": "Multi-Modal SLAM: Visual Odometry & LiDAR Mapping (COMP0222)",
       "dates": "2026",
       "group": "AI Applications",
@@ -29,7 +65,7 @@
       "externalLink": ""
     },
     {
-      "id": 3,
+      "id": 5,
       "name": "InfluX - Social Trends Analytics Platform",
       "dates": "2025",
       "group": "AI Applications",
@@ -39,7 +75,7 @@
       "externalLink": "https://devpost.com/software/influx-ztcyp4"
     },
     {
-      "id": 4,
+      "id": 6,
       "name": "Àgbẹ̀ - Autonomous Agricultural Robot for Precision Seeding",
       "dates": "2025",
       "group": "Robotic Systems",
@@ -49,17 +85,17 @@
       "externalLink": "https://github.com/Dami28O/NCAIR-AutonomousSeeding/tree/main"
     },
     {
-      "id": 5,
+      "id": 7,
       "name": "Protalab - Agentic AI Workflow for Automated 3D Printing",
       "dates": "2025",
       "group": "AI Applications",
       "description": "Participated in a project with four of my peers in collaboration with <b>Outshift by Cisco</b>, to highlight agentic capabilities for real life solutions. We designed and implemented an agentic workflow using LangChain and LangGraph, enabling modular coordination of LLM-based agents for design generation, refinement, 3D printing and supervision.",
       "technologies": ["LangGraph", "LangChain", "Prompt Engineering", "Angular.js"],
-      "images": [],
+      "images": ["/assets/images/ProjectPics/protalab.png"],
       "externalLink": "https://www.linkedin.com/posts/damilola-ogunleye-8393a5287_you-cant-go-far-in-ai-circles-these-days-activity-7334187470013554689-WVYM?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEWlpG0By4THAEPdgB8epOltVGZsJ_wyr8Q" 
     },
     {
-      "id": 6,
+      "id": 8,
       "name": "UKSEDS Olympus Rover Trials Basic Stream",
       "dates": "2025",
       "group": "Robotic Systems",
@@ -69,7 +105,7 @@
       "externalLink": "https://www.ucl.ac.uk/engineering/news/ucl-robotics-ai-students-triumph-national-mars-rover-challenge" 
     },
     {
-      "id": 7,
+      "id": 9,
       "name": "Cartpole Control System (COMP0216)",
       "dates": "2025",
       "group": "Robotic Systems",
@@ -79,7 +115,7 @@
       "externalLink": ""
     },
     {
-      "id": 8,
+      "id": 10,
       "name": "Robotic Gripper Simulation and Grasp Success Prediction with Machine Learning (COMP0213)",
       "dates": "2024",
       "group": "AI Applications",
@@ -89,7 +125,7 @@
       "externalLink": ""
     },
     {
-      "id": 9,
+      "id": 11,
       "name": "Spotlight - First Place Project at Google Black Googler Network Hackathon",
       "dates": "2024",
       "group": "AI Applications",
@@ -99,7 +135,7 @@
       "externalLink": "https://github.com/jalliet/spotlight"
     },
     {
-      "id": 10,
+      "id": 12,
       "name": "Machine Learning for Classification and Regression (COMP0214)",
       "dates": "2024",
       "group": "AI Applications",
@@ -109,7 +145,7 @@
       "externalLink": ""
     },
     {
-      "id": 11,
+      "id": 13,
       "name": "Sign Language Fingerspelling Recognition with Computer Vision",
       "dates": "2024",
       "group": "AI Applications",
