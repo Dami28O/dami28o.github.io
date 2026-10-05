@@ -344,17 +344,10 @@ body {
   fill: var(--ink-3);
 }
 
-/* Tool labels appear only when a linked project or the tool is highlighted */
 .map-node.is-tech .map-label {
   fill: var(--ink-3);
   font-size: 11.5px;
-  opacity: 0;
   transition: opacity var(--transition-base), fill var(--transition-base);
-}
-
-.map-node.is-tech.is-linked .map-label,
-.map-node.is-tech.is-active .map-label {
-  opacity: 1;
 }
 
 .map-node.is-dragging {
@@ -789,6 +782,14 @@ body {
   }
   .map-label {
     font-size: 12px;
+  }
+  /* Phones: tool labels appear only when highlighted, to keep the map open */
+  .map-node.is-tech .map-label {
+    opacity: 0;
+  }
+  .map-node.is-tech.is-linked .map-label,
+  .map-node.is-tech.is-active .map-label {
+    opacity: 1;
   }
   .map-caption {
     right: 0;

@@ -4,6 +4,54 @@ const SVG_NS = 'http://www.w3.org/2000/svg'
 const MOBILE_BREAKPOINT = 768
 // A tool becomes a hub when at least this many projects share it
 const MIN_SHARED = 2
+// Labels sit to the right of their dot, this far from its centre
+const LABEL_OFFSET = { project: 11, tech: 7 }
+const LABEL_HALF_HEIGHT = 9
+
+/**
+ * Collision force for label boxes: each node is treated as the rectangle
+ * covering its dot and its label, and overlapping rectangles are pushed
+ * apart along the axis with the smaller overlap
+ */
+function labelCollide(padding = 5, strength = 0.7) {
+  let nodes = []
+
+  const box = (node) => ({
+    left: node.x - 6 - padding,
+    right: node.x + LABEL_OFFSET[node.type] + node.labelWidth + padding,
+    top: node.y - LABEL_HALF_HEIGHT - padding / 2,
+    bottom: node.y + LABEL_HALF_HEIGHT + padding / 2
+  })
+
+  function force() {
+    for (let i = 0; i < nodes.length; i++) {
+      const a = nodes[i]
+      const boxA = box({ ...a, x: a.x + a.vx, y: a.y + a.vy })
+      for (let j = i + 1; j < nodes.length; j++) {
+        const b = nodes[j]
+        const boxB = box({ ...b, x: b.x + b.vx, y: b.y + b.vy })
+        const overlapX = Math.min(boxA.right, boxB.right) - Math.max(boxA.left, boxB.left)
+        const overlapY = Math.min(boxA.bottom, boxB.bottom) - Math.max(boxA.top, boxB.top)
+        if (overlapX <= 0 || overlapY <= 0) continue
+
+        if (overlapX < overlapY) {
+          const direction = (boxA.left + boxA.right) < (boxB.left + boxB.right) ? -1 : 1
+          const shift = (overlapX / 2) * strength * direction
+          a.vx += shift
+          b.vx -= shift
+        } else {
+          const direction = a.y < b.y ? -1 : 1
+          const shift = (overlapY / 2) * strength * direction
+          a.vy += shift
+          b.vy -= shift
+        }
+      }
+    }
+  }
+
+  force.initialize = (n) => { nodes = n }
+  return force
+}
 
 /**
  * ProjectMap Component
@@ -121,14 +169,14 @@ export class ProjectMap {
           <circle class="map-hit" r="16"></circle>
           <circle class="map-ring" r="10"></circle>
           <circle class="map-dot" r="4.5"></circle>
-          <text class="map-label" x="11" dy="0.35em"></text>
+          <text class="map-label" x="${LABEL_OFFSET.project}" dy="0.35em"></text>
         `
       } else {
         g.setAttribute('aria-hidden', 'true')
         g.innerHTML = `
           <circle class="map-hit" r="12"></circle>
           <circle class="map-dot" r="2.5"></circle>
-          <text class="map-label" x="7" dy="0.35em"></text>
+          <text class="map-label" x="${LABEL_OFFSET.tech}" dy="0.35em"></text>
         `
       }
       g.querySelector('.map-label').textContent = node.label
@@ -162,9 +210,12 @@ export class ProjectMap {
     }
   }
 
-  start() {
+  async start() {
+    // Label widths drive the layout, so wait for the web fonts first
+    if (document.fonts?.ready) await document.fonts.ready
     if (!this.root.isConnected) return
     this.measure()
+    this.measureLabels()
 
     const bounds = this.getBounds()
     const areaWidth = bounds.right - bounds.left
@@ -187,7 +238,8 @@ export class ProjectMap {
         .strength(0.25))
       .force('charge', forceManyBody()
         .strength(d => (d.type === 'project' ? -1 : -0.3) * scale * (isMobile ? 0.3 : 0.75)))
-      .force('collide', forceCollide(d => this.collideRadius(d)).strength(0.9).iterations(3))
+      .force('collide', forceCollide(d => (d.type === 'project' ? 10 : 6)))
+      .force('labels', labelCollide())
       .force('x', forceX(bounds.cx).strength(wide ? 0.012 : 0.07))
       .force('y', forceY(bounds.cy).strength(wide ? 0.05 : 0.025))
       .on('tick', () => this.tick())
@@ -204,13 +256,14 @@ export class ProjectMap {
     this.resizeObserver.observe(this.root)
   }
 
-  collideRadius(node) {
-    // Tool labels stay hidden until highlighted, so tools only need a little room
-    if (node.type === 'tech') return 12
-    const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
-    const labelWidth = node.label.length * (isMobile ? 5.8 : 6.4)
-    // Labels sit to the right, so treat the node as a wide disc
-    return 14 + labelWidth / 2
+  /**
+   * Record each label's rendered width for collision and bounds
+   */
+  measureLabels() {
+    this.nodes.forEach(node => {
+      const text = node.el.querySelector('.map-label')
+      node.labelWidth = text.getComputedTextLength() || node.label.length * 6.4
+    })
   }
 
   measure() {
@@ -225,6 +278,8 @@ export class ProjectMap {
     const oldHeight = this.height
     this.measure()
     if (!this.simulation || (oldWidth === this.width && oldHeight === this.height)) return
+    // Crossing the phone breakpoint changes the label font size
+    this.measureLabels()
 
     const bounds = this.getBounds()
     this.simulation.force('x').x(bounds.cx)
@@ -242,7 +297,7 @@ export class ProjectMap {
 
     this.nodes.forEach(node => {
       // Keep nodes (and their labels) inside the drawable area
-      const labelRoom = node.type === 'project' ? Math.min(150, node.label.length * 6.2 + 14) : 8
+      const labelRoom = LABEL_OFFSET[node.type] + node.labelWidth + 4
       node.x = Math.max(bounds.left + 8, Math.min(bounds.right - labelRoom, node.x))
       node.y = Math.max(bounds.top + 8, Math.min(bounds.bottom - 8, node.y))
       node.el.setAttribute('transform', `translate(${node.x.toFixed(1)},${node.y.toFixed(1)})`)
@@ -422,7 +477,7 @@ export class ProjectMap {
     const gap = 24
     const width = this.preview.offsetWidth
     const height = this.preview.offsetHeight
-    const labelWidth = Math.min(150, node.label.length * 6.2 + 14)
+    const labelWidth = LABEL_OFFSET.project + node.labelWidth
 
     let left = node.x + labelWidth + gap
     if (left + width > this.width - 16) left = node.x - width - gap
