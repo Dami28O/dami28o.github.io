@@ -4,27 +4,19 @@
   "sections": {
     "about": {
       "title": "About Me",
-      "content": "Passionate about solving societal issues with the help of robotics and artificial intelligence, blending curiousity, creativity and determination.",
-      "color": "#ff6b6b",
-      "position": { "x": 35, "y": -15 }
+      "content": "Passionate about solving societal issues with the help of robotics and artificial intelligence, blending curiousity, creativity and determination."
     },
     "current": {
       "title": "Current Role",
-      "content": "A fourth year student pursuing an MEng in Robotics and Artificial Intelligence at <i>University College London</i>, with a particular interest in human-AI interaction and its broader social impact.",
-      "color": "#5a0839",
-      "position": { "x": 25, "y": 5 }
+      "content": "A fourth year student pursuing an MEng in Robotics and Artificial Intelligence at <i>University College London</i>, with a particular interest in human-AI interaction and its broader social impact."
     },
     "goals": {
       "title": "Future Aspirations",
-      "content": "To develop next-generation AI and robotic systems that will revolutionise different industries, keeping a strong focus on ethical AI and its social impact.",
-      "color": "#45b7d1",
-      "position": { "x": 40, "y": -25 }
+      "content": "To develop next-generation AI and robotic systems that will revolutionise different industries, keeping a strong focus on ethical AI and its social impact."
     },
     "skills": {
       "title": "Core Skills",
-      "content": "Machine Learning • Autonomous Systems • Computer Vision • Python • PyTorch • LangGraph • CAD",
-      "color": "#96ceb4",
-      "position": { "x": 20, "y": -5 }
+      "content": "Machine Learning • Autonomous Systems • Computer Vision • Python • PyTorch • LangGraph • CAD"
     }
   }
 }

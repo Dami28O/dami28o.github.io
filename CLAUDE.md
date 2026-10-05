@@ -4,79 +4,47 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a personal portfolio website built with Vite and vanilla JavaScript, featuring a modular component-based architecture inspired by Keita Yamada's minimalist design aesthetic. The site includes Home, Projects, and Contact pages with light/dark theme support.
+Personal portfolio for a robotics and ML engineer, built with Vite and vanilla JavaScript components. Pages: Home (bio and an interactive project map), Projects (index and one full-width page per project) and Contact. Minimal, monochrome design with light and dark themes.
 
 ## Development Commands
 
 ```bash
-# Install dependencies
 npm install
-
-# Start development server (localhost:3000)
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
+npm run dev       # localhost:3000
+npm run build     # dist/ (emptied on every build)
 npm run preview
+npm run deploy    # build, copy CNAME, publish dist/ to the gh-pages branch
 ```
 
 ## Architecture
 
-**Component System:**
-- `/src/components/` - Reusable UI components (Layout, Navigation, ThemeToggle, ProjectMap)
-- `/src/pages/` - Page components (Home, Projects, Contact)
-- `/src/router.js` - Hash-based SPA routing system: `#projects` is the index, `#projects/3` is project 3's full-width page
-- `ProjectMap` - home page centrepiece: d3-force map of projects linked through technologies shared by 2+ projects
-- `/src/main.js` - Application entry point
+- `src/router.js` - Hash routing: `#` home, `#projects` index, `#projects/<id>` project page, `#contact`. Sets `document.title` and moves focus into `<main>` after navigation
+- `src/components/Layout.js` - Frame, name, nav, theme toggle and skip link (the skip link focuses `<main>` in script, since a `#` href would trigger routing)
+- `src/components/ProjectMap.js` - Home centrepiece. Projects link to technologies shared by 2+ projects. Desktop: d3-force layout with a custom label-box collision force; phones (<=768px): two-column "ladder" (projects left with labels before the dot, tools right), ordered by the barycentre method. Hover/focus previews, click/Enter opens; on touch, first tap previews, second opens
+- `src/pages/Projects.js` - Index (filters, hover image) and project pages (description beside a sticky image and tools list, previous/next). Escape returns to the index at the same scroll position
+- `src/pages/Contact.js` - Email with copy button, then LinkedIn, GitHub and CV rows
+- `src/components/ThemeToggle.js` - Theme follows the system until the toggle is used; an inline script in `index.html` sets `data-theme` before first paint
 
-**Data Management:**
-- `/public/data/*.json` - Content data files for easy updates
-- `bio.json` - Personal information and biography
-- `projects.json` - Project data for the map, the projects index and project pages
-- `contact.json` - Contact links and CV information
+## Content
 
-**Styling:**
-- CSS custom properties for theming
-- Mobile-first responsive design
-- Smooth transitions and microinteractions
-- Light/dark theme follows the system setting; the toggle saves an explicit choice in localStorage
+All content is in `public/data/` (tracked in git):
+- `projects.json` - fields: id, name, shortName (map label), dates, group, description (HTML; `<b>` only for partner organisations), technologies, images, preview, externalLink
+- `bio.json` - only `sections.current.content` is shown (home page)
+- `contact.json` - links and CV path
 
-## Content Updates
+Images: originals in `public/assets/images/ProjectPics/`; the site uses WebP copies in `ProjectPics/previews/` via the `preview` field:
+`cwebp -q 82 -alpha_q 90 -resize 2000 0 in.png -o previews/in.webp` (use the original width if under 2000px).
 
-**Adding New Projects:**
-1. Edit `public/data/projects.json`
-2. Add project object with: id, name, shortName (map label), dates, group, description, technologies, images, preview, externalLink
-3. Images go in `public/assets/images/ProjectPics/`; add a web-sized WebP copy to `ProjectPics/previews/` and point `preview` at it (used by the map card, the index hover and the project page): `cwebp -q 82 -alpha_q 90 -resize 2000 0 in.png -o previews/in.webp` (use the original width if it is under 2000px)
-
-**Updating Biography:**
-1. Edit `public/data/bio.json`
-2. Modify name, role, or biography text
-
-**Contact Information:**
-1. Edit `public/data/contact.json`
-2. Update LinkedIn, GitHub, email links
-3. Replace CV file in `public/assets/docs/`
-
-## Deployment
-
-The site builds to static files and can be deployed to any static hosting service:
-- Netlify: Auto-deploy from git with build command `npm run build`
-- Vercel: Zero-config deployment
-- GitHub Pages: Use GitHub Actions workflow
+CV: only `public/assets/docs/OGUNLEYE_CV.pdf` is tracked (see `.gitignore`).
 
 ## Design System
 
-**Typography:** Newsreader (display: name, titles) and Hanken Grotesk (everything else), loaded in `index.html`
-**Colors:** tokens at the top of `src/styles/main.css` (`--paper`, `--ink`, `--ink-2`, `--ink-3`, `--rule`, `--surface`, `--accent`); monochrome, with the accent set to the ink colour. Theme follows the system until the visitor uses the toggle, and is always written to `data-theme` on `<html>`
-**Layout:** CSS Grid and Flexbox with generous whitespace
-**Interactions:** Subtle hover states and smooth transitions
+- **Typography:** Newsreader (name, titles) and Hanken Grotesk (everything else), loaded in `index.html`. Root font size scales from 16px to 20px on large monitors, so size things in `rem`
+- **Colour:** tokens at the top of `src/styles/main.css` (`--paper`, `--surface`, `--ink`, `--ink-2`, `--ink-3`, `--rule`, `--accent`). Monochrome; the accent is the ink colour. No other hues
+- **Layout:** desktop pages use a fixed frame with name top-left and nav on the left rail; projects and contact scroll inside `.projects-scroll` / `.contact-scroll`. Phones scroll the page normally
+- **Avoid:** uppercase labels, pills/tags, arrows appended to links, decorative motion
 
-## Key Features
+## Working in this repo
 
-- Hash-based routing for SPA navigation
-- Projects index with hover image previews, and a full-width page per project
-- Theme persistence across sessions
-- Responsive design for mobile/desktop
-- Component-based architecture for easy maintenance
+- The folder is synced by OneDrive, which flips file modes (100644 -> 100755). `git status` shows many mode-only changes; don't commit them. After `git add`, run `git update-index --chmod=-x <files>` on the files you changed
+- Accessibility baseline: axe-core reports no violations on any page; keep 44px touch targets on phones and visible focus states
