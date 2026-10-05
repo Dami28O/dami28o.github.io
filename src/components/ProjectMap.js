@@ -134,8 +134,12 @@ export class ProjectMap {
         <p class="map-preview-title"></p>
         <p class="map-preview-meta"></p>
       </div>
-      <p class="map-caption">Projects, linked by the tools they share. Hover to preview, click to open.</p>
+      <p class="map-caption"></p>
     `
+    const touch = window.matchMedia('(hover: none)').matches
+    root.querySelector('.map-caption').textContent = touch
+      ? 'Projects, linked by the tools they share. Tap to preview, tap again to open.'
+      : 'Projects, linked by the tools they share. Hover to preview, click to open.'
 
     this.root = root
     this.svg = root.querySelector('.map-svg')
@@ -205,8 +209,9 @@ export class ProjectMap {
       top,
       right: this.width - right,
       bottom: this.height - bottom,
-      cx: left + (this.width - right - left) / 2,
-      cy: top + (this.height - bottom - top) / 2
+      // Labels extend right of their dots, so phones centre a little left
+      cx: left + (this.width - right - left) * (isMobile ? 0.4 : 0.5),
+      cy: top + (this.height - bottom - top) * (isMobile ? 0.42 : 0.5)
     }
   }
 
@@ -223,11 +228,22 @@ export class ProjectMap {
     const scale = Math.sqrt(areaWidth * areaHeight)
     const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
 
-    // Seed positions close to the centre so the layout blooms outwards
+    // Phones (and reduced motion) get a settled layout that fades in;
+    // larger screens watch it bloom outwards from the centre
+    const animate = !this.reducedMotion && !isMobile
     this.nodes.forEach((node, i) => {
-      const angle = (i / this.nodes.length) * Math.PI * 2
-      node.x = bounds.cx + Math.cos(angle) * 20
-      node.y = bounds.cy + Math.sin(angle) * 20
+      if (animate) {
+        const angle = (i / this.nodes.length) * Math.PI * 2
+        node.x = bounds.cx + Math.cos(angle) * 20
+        node.y = bounds.cy + Math.sin(angle) * 20
+      } else {
+        // Spread seeds over the area on a sunflower spiral so the
+        // precomputed layout starts untangled
+        const t = Math.sqrt((i + 0.5) / this.nodes.length)
+        const angle = i * 2.39996
+        node.x = bounds.cx + Math.cos(angle) * t * areaWidth * 0.45
+        node.y = bounds.cy + Math.sin(angle) * t * areaHeight * 0.45
+      }
     })
 
     // Centring is weaker along the longer side so the map fills the area
@@ -237,20 +253,21 @@ export class ProjectMap {
         .distance(scale * (isMobile ? 0.11 : 0.13))
         .strength(0.25))
       .force('charge', forceManyBody()
-        .strength(d => (d.type === 'project' ? -1 : -0.3) * scale * (isMobile ? 0.3 : 0.75)))
+        .strength(d => (d.type === 'project' ? -1 : -0.3) * scale * (isMobile ? 0.55 : 0.75)))
       .force('collide', forceCollide(d => (d.type === 'project' ? 10 : 6)))
       .force('labels', labelCollide())
-      .force('x', forceX(bounds.cx).strength(wide ? 0.012 : 0.07))
-      .force('y', forceY(bounds.cy).strength(wide ? 0.05 : 0.025))
+      .force('x', forceX(bounds.cx).strength(wide ? 0.012 : 0.03))
+      .force('y', forceY(bounds.cy).strength(wide ? 0.05 : 0.03))
       .on('tick', () => this.tick())
 
-    if (this.reducedMotion) {
-      this.simulation.stop()
-      for (let i = 0; i < 300; i++) this.simulation.tick()
-      this.tick()
-    } else {
+    if (animate) {
       this.simulation.on('end', () => this.playHint())
+    } else {
+      this.simulation.stop()
+      this.settle(300)
+      if (!this.reducedMotion) setTimeout(() => this.playHint(), 400)
     }
+    this.root.classList.add('is-ready')
 
     this.resizeObserver = new ResizeObserver(() => this.handleResize())
     this.resizeObserver.observe(this.root)
@@ -284,22 +301,42 @@ export class ProjectMap {
     const bounds = this.getBounds()
     this.simulation.force('x').x(bounds.cx)
     this.simulation.force('y').y(bounds.cy)
-    if (this.reducedMotion) {
-      for (let i = 0; i < 120; i++) this.simulation.tick()
-      this.tick()
+    if (this.reducedMotion || window.innerWidth <= MOBILE_BREAKPOINT) {
+      this.simulation.stop()
+      this.simulation.alpha(0.3)
+      this.settle(120)
     } else {
       this.simulation.alpha(0.3).restart()
     }
   }
 
-  tick() {
+  /**
+   * Keep nodes (and their labels) inside the drawable area
+   */
+  clampNodes() {
     const bounds = this.getBounds()
-
     this.nodes.forEach(node => {
-      // Keep nodes (and their labels) inside the drawable area
       const labelRoom = LABEL_OFFSET[node.type] + node.labelWidth + 4
       node.x = Math.max(bounds.left + 8, Math.min(bounds.right - labelRoom, node.x))
       node.y = Math.max(bounds.top + 8, Math.min(bounds.bottom - 8, node.y))
+    })
+  }
+
+  /**
+   * Advance the layout without animating; manual ticks fire no events,
+   * so clamping happens here on every step
+   */
+  settle(steps) {
+    for (let i = 0; i < steps; i++) {
+      this.simulation.tick()
+      this.clampNodes()
+    }
+    this.tick()
+  }
+
+  tick() {
+    this.clampNodes()
+    this.nodes.forEach(node => {
       node.el.setAttribute('transform', `translate(${node.x.toFixed(1)},${node.y.toFixed(1)})`)
     })
 

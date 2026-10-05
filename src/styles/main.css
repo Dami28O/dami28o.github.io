@@ -277,10 +277,16 @@ body {
   color: var(--ink-2);
 }
 
-/* Project Map */
+/* Project Map: hidden until the first layout is placed */
 .project-map {
   position: absolute;
   inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.project-map.is-ready {
+  opacity: 1;
 }
 
 .map-svg {
@@ -762,7 +768,7 @@ body {
     margin-inline: auto;
   }
 
-  /* Home on phones: bio, then the map, then the preview docked below */
+  /* Home on phones: the map first, then the bio */
   .home-page {
     position: static;
     display: flex;
@@ -771,13 +777,13 @@ body {
   }
   .home-bio {
     position: static;
-    order: -1;
   }
   .home-map {
     position: relative;
     inset: auto;
-    height: 78vh;
-    min-height: 32rem;
+    height: 62vh;
+    height: 62svh; /* Stable as the mobile address bar shows and hides */
+    min-height: 28rem;
     margin-bottom: var(--space-xl); /* Room for the caption below */
   }
   .map-label {
