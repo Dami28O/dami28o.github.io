@@ -46,5 +46,5 @@ CV: only `public/assets/docs/OGUNLEYE_CV.pdf` is tracked (see `.gitignore`).
 
 ## Working in this repo
 
-- The folder is synced by OneDrive, which flips file modes (100644 -> 100755). `git status` shows many mode-only changes; don't commit them. After `git add`, run `git update-index --chmod=-x <files>` on the files you changed
+- Keep the repo out of cloud-synced folders (OneDrive, iCloud): sync clients rename `dist/` folders mid-build (`assets 2`) and flip file modes
 - Accessibility baseline: axe-core reports no violations on any page; keep 44px touch targets on phones and visible focus states
