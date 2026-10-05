@@ -34,16 +34,20 @@ export class Home {
       <p class="home-bio"></p>
     `
 
+
     this.loadData().then(({ projects, bio }) => {
       if (bio?.sections?.current) {
         page.querySelector('.home-bio').innerHTML = bio.sections.current.content
       }
+      if (bio?.now?.text) page.appendChild(this.renderNote(bio.now))
       if (projects.length === 0) return
 
+      const mapContainer = page.querySelector('.home-map')
       this.projectMap = new ProjectMap(projects, {
-        onOpen: (id) => { window.location.hash = `projects/${id}` }
+        onOpen: (id) => { window.location.hash = `projects/${id}` },
+        getObstacles: () => this.noteObstacle(page, mapContainer)
       })
-      page.querySelector('.home-map').appendChild(this.projectMap.render())
+      mapContainer.appendChild(this.projectMap.render())
     })
 
     // Add entrance animation
@@ -52,6 +56,41 @@ export class Home {
     })
 
     return page
+  }
+
+  /**
+   * "Currently working on" note, desktop only (hidden on phones in CSS)
+   * @param {{text: string, updated?: string}} now - From bio.json
+   */
+  renderNote(now) {
+    const note = document.createElement('aside')
+    note.className = 'now-note'
+    note.setAttribute('aria-label', 'Currently working on')
+    note.innerHTML = `
+      <p class="now-note-label">Currently working on</p>
+      <p class="now-note-text"></p>
+      ${now.updated ? '<p class="now-note-date"></p>' : ''}
+    `
+    note.querySelector('.now-note-text').textContent = now.text
+    if (now.updated) note.querySelector('.now-note-date').textContent = `Updated ${now.updated}`
+    return note
+  }
+
+  /**
+   * The note's rectangle in map coordinates, padded, so the map avoids it
+   */
+  noteObstacle(page, mapContainer) {
+    const note = page.querySelector('.now-note')
+    if (!note || note.offsetParent === null) return []
+    const n = note.getBoundingClientRect()
+    const m = mapContainer.getBoundingClientRect()
+    const pad = 20
+    return [{
+      left: n.left - m.left - pad,
+      top: n.top - m.top - pad,
+      right: n.right - m.left + pad,
+      bottom: n.bottom - m.top + pad
+    }]
   }
 
   destroy() {

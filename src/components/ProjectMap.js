@@ -63,9 +63,11 @@ function labelCollide(padding = 5, strength = 0.7) {
  * - Nodes can be dragged; layout respects reduced motion
  */
 export class ProjectMap {
-  constructor(projects, { onOpen } = {}) {
+  constructor(projects, { onOpen, getObstacles } = {}) {
     this.projects = projects
     this.onOpen = onOpen || (() => {})
+    // Rectangles (in map coordinates) that nodes must stay out of
+    this.getObstacles = getObstacles || (() => [])
     this.nodes = []
     this.links = []
     this.simulation = null
@@ -410,10 +412,26 @@ export class ProjectMap {
    */
   clampNodes() {
     const bounds = this.getBounds()
+    const obstacles = this.getObstacles()
     this.nodes.forEach(node => {
       const labelRoom = LABEL_OFFSET[node.type] + node.labelWidth + 4
       node.x = Math.max(bounds.left + 8, Math.min(bounds.right - labelRoom, node.x))
       node.y = Math.max(bounds.top + 8, Math.min(bounds.bottom - 8, node.y))
+
+      // Push a node and its label out of any obstacle, left or down,
+      // whichever is the shorter move
+      obstacles.forEach(rect => {
+        const right = node.x + labelRoom
+        if (right <= rect.left || node.x - 6 >= rect.right) return
+        if (node.y + LABEL_HALF_HEIGHT <= rect.top || node.y - LABEL_HALF_HEIGHT >= rect.bottom) return
+        const moveLeft = right - rect.left
+        const moveDown = rect.bottom - (node.y - LABEL_HALF_HEIGHT)
+        if (moveLeft < moveDown) {
+          node.x -= moveLeft
+        } else {
+          node.y += moveDown
+        }
+      })
     })
   }
 
