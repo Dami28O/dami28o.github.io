@@ -256,7 +256,20 @@ export class ProjectMap {
     }
   }
 
+  /**
+   * Put a node's label before (left) or after (right) its dot
+   */
+  setLabelSide(nodes, side) {
+    nodes.forEach(node => {
+      const label = node.el.querySelector('.map-label')
+      const offset = LABEL_OFFSET[node.type]
+      label.setAttribute('x', side === 'left' ? -offset : offset)
+      label.setAttribute('text-anchor', side === 'left' ? 'end' : 'start')
+    })
+  }
+
   layoutForce() {
+    this.setLabelSide(this.nodes, 'right')
     const bounds = this.getBounds()
     const areaWidth = bounds.right - bounds.left
     const areaHeight = bounds.bottom - bounds.top
@@ -300,7 +313,9 @@ export class ProjectMap {
   }
 
   /**
-   * Two columns: tools on the left, projects evenly spaced on the right.
+   * Two columns: projects evenly spaced on the left with their labels
+   * before the dot, tools on the right with labels after, so links run
+   * between the dot columns without crossing any text.
    * Both are ordered by the average position of their neighbours
    * (barycentre method) to cut down on crossing links.
    */
@@ -326,9 +341,11 @@ export class ProjectMap {
     this.root.style.height = `${height}px`
     this.measure()
 
-    const toolX = 4
     const longestProject = Math.max(...projects.map(node => node.labelWidth))
-    const projectX = Math.max(140, this.width - longestProject - LABEL_OFFSET.project - 4)
+    const longestTool = Math.max(...tools.map(node => node.labelWidth))
+    const projectX = longestProject + LABEL_OFFSET.project + 2
+    const toolX = this.width - longestTool - LABEL_OFFSET.tech - 2
+    this.setLabelSide(projects, 'left')
 
     projects.forEach((node, i) => {
       node.x = projectX

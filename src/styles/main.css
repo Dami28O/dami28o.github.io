@@ -762,7 +762,7 @@ body {
     margin-inline: auto;
   }
 
-  /* Home on phones: the map first, then the bio */
+  /* Home on phones: bio, then the map */
   .home-page {
     position: static;
     display: flex;
@@ -771,6 +771,7 @@ body {
   }
   .home-bio {
     position: static;
+    order: -1;
   }
   /* The ladder layout sets the map's height from its rows */
   .home-map {
