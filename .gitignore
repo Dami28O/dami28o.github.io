@@ -86,7 +86,10 @@ jspm_packages/
 
 # Gatsby files
 .cache/
-public
+
+# Public assets: track data and images, but only the latest CV
+public/assets/docs/*
+!public/assets/docs/OGUNLEYE_CV.pdf
 
 # Storybook build outputs
 .out
