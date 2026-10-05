@@ -140,8 +140,8 @@
       "group": "AI Applications",
       "description": "Created a robotic gripper simulation tool using Python and PyBullet, capable of generating grasp data and evaluating grasp success for multiple gripper types and objects. Key features include realistic physics simulation, customizable parameters, automated success/failure evaluation, and random approach angle generation. Implemented success prediction using machine learning techniques, such as Logistic Regression, Support Vector Machines and Multilayer Perceptron",
       "technologies": ["Python", "Pybullet", "scikit-learn", "Pytorch"],
-      "images": ["/assets/images/ProjectPics/Gripper_Classification.png"],
-      "preview": "/assets/images/ProjectPics/previews/Gripper_Classification.webp",
+      "images": [],
+      "preview": "",
       "externalLink": ""
     },
     {
