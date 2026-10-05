@@ -237,38 +237,23 @@ export class Projects {
           <p class="project-detail-meta">${escapeHtml(project.dates)}${project.group ? `, ${escapeHtml(project.group)}` : ''}</p>
         </header>
 
-        ${image ? `
-          <figure class="project-detail-media">
-            <img src="${image}" alt="${escapeHtml(project.name)}" />
-          </figure>
-        ` : ''}
-
-        <div class="project-detail-body">
+        <div class="project-detail-layout">
           <div class="project-detail-description">${project.description}</div>
-          <aside class="project-detail-facts" aria-label="Project details">
-            <dl>
-              <div>
-                <dt>Tools</dt>
-                <dd>
-                  <ul class="project-tools">
-                    ${project.technologies.map(tech => `<li>${escapeHtml(tech)}</li>`).join('')}
-                  </ul>
-                </dd>
-              </div>
-              <div>
-                <dt>When</dt>
-                <dd>${escapeHtml(project.dates)}</dd>
-              </div>
-              ${project.group ? `
-                <div>
-                  <dt>Area</dt>
-                  <dd>${escapeHtml(project.group)}</dd>
-                </div>
+
+          <aside class="project-detail-side" aria-label="Project details">
+            ${image ? `
+              <figure class="project-detail-media">
+                <img src="${image}" alt="${escapeHtml(project.name)}" />
+              </figure>
+            ` : ''}
+            <dl class="project-detail-facts">
+              <dt>Tools</dt>
+              <dd>${escapeHtml(project.technologies.join(', '))}</dd>
+              ${project.externalLink ? `
+                <dt>Link</dt>
+                <dd><a class="project-detail-link" href="${project.externalLink}" target="_blank" rel="noopener noreferrer">View project</a></dd>
               ` : ''}
             </dl>
-            ${project.externalLink ? `
-              <a class="project-detail-link" href="${project.externalLink}" target="_blank" rel="noopener noreferrer">View project</a>
-            ` : ''}
           </aside>
         </div>
 

@@ -627,22 +627,9 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.project-detail-media {
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 0 var(--space-xl);
-}
-
-.project-detail-media img {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  max-height: 48vh;
-}
-
-.project-detail-body {
+.project-detail-layout {
   display: grid;
-  grid-template-columns: minmax(0, 65ch) minmax(12rem, 16rem);
+  grid-template-columns: minmax(0, 36rem) minmax(16rem, 1fr);
   gap: var(--space-2xl);
   align-items: start;
 }
@@ -658,37 +645,48 @@ body {
   color: var(--ink);
 }
 
-.project-detail-facts {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-  font-size: var(--text-sm);
-}
-
-.project-detail-facts dl {
+/* Image and facts stay in view while the description scrolls */
+.project-detail-side {
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  min-width: 0;
+}
+
+.project-detail-media {
+  margin: 0;
+}
+
+.project-detail-media img {
+  display: block;
+  width: 100%;
+  max-height: 52vh;
+  object-fit: contain;
+  object-position: left top;
+}
+
+.project-detail-facts {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  column-gap: var(--space-sm);
+  row-gap: var(--space-xs);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--rule);
+  font-size: var(--text-sm);
+  line-height: 1.55;
 }
 
 .project-detail-facts dt {
   color: var(--ink-3);
-  margin-bottom: var(--space-2xs);
 }
 
 .project-detail-facts dd {
   color: var(--ink);
 }
 
-.project-tools {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
 .project-detail-link {
-  width: fit-content;
   color: var(--ink);
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -848,11 +846,16 @@ body {
     padding: 0;
   }
   .projects-index,
-  .project-detail-body {
+  .project-detail-layout {
     grid-template-columns: minmax(0, 1fr);
   }
   .project-hover {
     display: none;
+  }
+  /* Phones: image and facts come before the description */
+  .project-detail-side {
+    position: static;
+    order: -1;
   }
   .project-detail-media img {
     max-height: 50vh;
