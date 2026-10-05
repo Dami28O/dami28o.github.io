@@ -621,8 +621,19 @@ body {
   outline: none;
 }
 
+/* Date on the left, area on the right, ruled off above the description */
+.project-detail-main {
+  max-width: 68ch;
+  min-width: 0;
+}
+
 .project-detail-meta {
-  margin-top: var(--space-xs);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+  border-bottom: 1px solid var(--rule);
   font-size: var(--text-sm);
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
@@ -636,7 +647,6 @@ body {
 }
 
 .project-detail-description {
-  max-width: 68ch;
   font-size: var(--text-base);
   line-height: 1.7;
   color: var(--ink-2);
@@ -922,7 +932,17 @@ body {
   .project-hover {
     display: none;
   }
-  /* Phones: image and facts come before the description */
+  /* Phones: date row, then image and facts, then the description */
+  .project-detail-layout {
+    gap: var(--space-md);
+  }
+  .project-detail-main {
+    display: contents;
+  }
+  .project-detail-meta {
+    order: -2;
+    margin-bottom: 0;
+  }
   .project-detail-side {
     position: static;
     order: -1;

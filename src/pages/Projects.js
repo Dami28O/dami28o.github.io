@@ -234,11 +234,16 @@ export class Projects {
 
         <header class="project-detail-header">
           <h2 class="project-detail-title" tabindex="-1">${escapeHtml(project.name)}</h2>
-          <p class="project-detail-meta">${escapeHtml(project.dates)}${project.group ? `, ${escapeHtml(project.group)}` : ''}</p>
         </header>
 
         <div class="project-detail-layout">
-          <div class="project-detail-description">${project.description}</div>
+          <div class="project-detail-main">
+            <p class="project-detail-meta">
+              <span>${escapeHtml(project.dates)}</span>
+              ${project.group ? `<span>${escapeHtml(project.group)}</span>` : ''}
+            </p>
+            <div class="project-detail-description">${project.description}</div>
+          </div>
 
           <aside class="project-detail-side" aria-label="Project details">
             ${image ? `
