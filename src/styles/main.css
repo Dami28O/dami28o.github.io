@@ -16,6 +16,9 @@
   --ink-3: #6E6E6E;
   --rule: #DEDEDE;
   --accent: #161616;
+  /* The one colour on the site: the "currently working on" note */
+  --note: #F3DC6B;
+  --note-ink: #2A2408;
 
   /* Typography */
   --font-display: "Newsreader", "Iowan Old Style", Georgia, serif;
@@ -58,6 +61,7 @@
   --ink-3: #858585;
   --rule: #2E2E2E;
   --accent: #EDEDED;
+  --note: #E6CE5C;
 
   color-scheme: dark;
 }
@@ -235,22 +239,27 @@ body {
 }
 
 .theme-toggle {
-  background: none;
-  border: 1px solid var(--rule);
-  border-radius: 50%;
-  width: 2.5rem;
-  height: 2.5rem;
-  cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  color: var(--ink-2);
+  gap: 0.45rem;
+  background: none;
+  border: none;
+  padding: var(--space-2xs) 0;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
   transition: color var(--transition-base), border-color var(--transition-base);
 }
 
 .theme-toggle:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.theme-toggle-icon {
+  flex: none;
 }
 
 /* Main Content */
@@ -303,6 +312,39 @@ body {
 .home-bio i {
   font-style: normal;
   color: var(--ink-2);
+}
+
+/* "Currently working on" note: desktop home page only */
+.now-note {
+  position: absolute;
+  top: 7.5rem;
+  right: var(--space-xl);
+  z-index: 3;
+  width: 14rem;
+  padding: var(--space-sm) 1.1rem 1.1rem;
+  background: var(--note);
+  color: var(--note-ink);
+  transform: rotate(-1.5deg);
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.12),
+    0 10px 18px -10px rgb(0 0 0 / 0.45);
+}
+
+.now-note-label {
+  font-size: var(--text-xs);
+  opacity: 0.7;
+  margin-bottom: var(--space-2xs);
+}
+
+.now-note-text {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.now-note-date {
+  margin-top: var(--space-xs);
+  font-size: var(--text-xs);
+  opacity: 0.6;
 }
 
 /* Project Map: hidden until the first layout is placed */
@@ -935,8 +977,7 @@ body {
     z-index: 40;
   }
   .theme-toggle {
-    width: 2.75rem;
-    height: 2.75rem;
+    min-height: 2.75rem;
   }
   /* Touch targets: at least 44px tall */
   .nav-link,
@@ -1011,6 +1052,10 @@ body {
   }
   .contact-email-address {
     font-size: var(--text-lg);
+  }
+
+  .now-note {
+    display: none;
   }
 
   /* Home on phones: bio, then the map */

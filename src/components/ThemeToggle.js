@@ -19,12 +19,13 @@ export class ThemeToggle {
     const toggle = document.createElement('button')
     toggle.className = 'theme-toggle'
     toggle.type = 'button'
-    // Half-filled disc: the filled side is drawn in the current text colour
+    // Small half-filled disc, then the name of the mode it switches to
     toggle.innerHTML = `
-      <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
-        <circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5" />
-        <path d="M10 2.75 A7.25 7.25 0 0 1 10 17.25 Z" fill="currentColor" />
+      <svg class="theme-toggle-icon" viewBox="0 0 20 20" width="12" height="12" aria-hidden="true">
+        <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M10 2 A8 8 0 0 1 10 18 Z" fill="currentColor" />
       </svg>
+      <span class="theme-toggle-label"></span>
     `
     this.button = toggle
     this.updateLabel()
@@ -70,7 +71,7 @@ export class ThemeToggle {
   updateLabel() {
     if (!this.button) return
     const next = this.currentTheme === 'light' ? 'dark' : 'light'
-    this.button.setAttribute('aria-label', `Switch to ${next} theme`)
-    this.button.title = `Switch to ${next} theme`
+    this.button.querySelector('.theme-toggle-label').textContent = `${next[0].toUpperCase()}${next.slice(1)} mode`
+    this.button.setAttribute('aria-label', `Switch to ${next} mode`)
   }
 }
