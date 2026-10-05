@@ -114,6 +114,13 @@ export class ProjectMap {
       this.neighbours.get(link.source).add(link.target)
       this.neighbours.get(link.target).add(link.source)
     })
+
+    // Resolve link ends to node objects so both layouts can use them
+    const byId = new Map(this.nodes.map(node => [node.id, node]))
+    this.links.forEach(link => {
+      link.source = byId.get(link.source)
+      link.target = byId.get(link.target)
+    })
   }
 
   /**
@@ -199,19 +206,17 @@ export class ProjectMap {
    * Work out where the map may sit, leaving room for the name and nav
    */
   getBounds() {
-    const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
-    const left = isMobile ? 16 : Math.min(260, this.width * 0.22)
-    const top = isMobile ? 16 : Math.min(190, this.height * 0.24)
-    const bottom = isMobile ? 16 : 64
-    const right = isMobile ? 16 : 48
+    const left = Math.min(260, this.width * 0.22)
+    const top = Math.min(190, this.height * 0.24)
+    const bottom = 64
+    const right = 48
     return {
       left,
       top,
       right: this.width - right,
       bottom: this.height - bottom,
-      // Labels extend right of their dots, so phones centre a little left
-      cx: left + (this.width - right - left) * (isMobile ? 0.4 : 0.5),
-      cy: top + (this.height - bottom - top) * (isMobile ? 0.42 : 0.5)
+      cx: left + (this.width - right - left) / 2,
+      cy: top + (this.height - bottom - top) / 2
     }
   }
 
@@ -220,17 +225,45 @@ export class ProjectMap {
     if (document.fonts?.ready) await document.fonts.ready
     if (!this.root.isConnected) return
     this.measure()
-    this.measureLabels()
+    this.layout()
+    this.root.classList.add('is-ready')
 
+    this.resizeObserver = new ResizeObserver(() => this.handleResize())
+    this.resizeObserver.observe(this.root)
+  }
+
+  /**
+   * Phones get a two-column ladder (tools left, projects right);
+   * larger screens get the force-directed map
+   */
+  layout() {
+    this.measureLabels()
+    const mode = window.innerWidth <= MOBILE_BREAKPOINT ? 'ladder' : 'force'
+    if (mode !== this.mode && this.simulation) {
+      this.simulation.stop()
+      this.simulation = null
+    }
+    this.mode = mode
+    this.root.classList.toggle('is-ladder', mode === 'ladder')
+
+    if (mode === 'ladder') {
+      this.layoutLadder()
+      if (!this.reducedMotion) setTimeout(() => this.playHint(), 400)
+    } else {
+      this.root.style.height = ''
+      this.measure()
+      this.layoutForce()
+    }
+  }
+
+  layoutForce() {
     const bounds = this.getBounds()
     const areaWidth = bounds.right - bounds.left
     const areaHeight = bounds.bottom - bounds.top
     const scale = Math.sqrt(areaWidth * areaHeight)
-    const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
 
-    // Phones (and reduced motion) get a settled layout that fades in;
-    // larger screens watch it bloom outwards from the centre
-    const animate = !this.reducedMotion && !isMobile
+    // Reduced motion gets a settled layout; otherwise it blooms from the centre
+    const animate = !this.reducedMotion
     this.nodes.forEach((node, i) => {
       if (animate) {
         const angle = (i / this.nodes.length) * Math.PI * 2
@@ -249,11 +282,9 @@ export class ProjectMap {
     // Centring is weaker along the longer side so the map fills the area
     const wide = areaWidth >= areaHeight
     this.simulation = forceSimulation(this.nodes)
-      .force('link', forceLink(this.links).id(d => d.id)
-        .distance(scale * (isMobile ? 0.11 : 0.13))
-        .strength(0.25))
+      .force('link', forceLink(this.links).distance(scale * 0.13).strength(0.25))
       .force('charge', forceManyBody()
-        .strength(d => (d.type === 'project' ? -1 : -0.3) * scale * (isMobile ? 0.55 : 0.75)))
+        .strength(d => (d.type === 'project' ? -1 : -0.3) * scale * 0.75))
       .force('collide', forceCollide(d => (d.type === 'project' ? 10 : 6)))
       .force('labels', labelCollide())
       .force('x', forceX(bounds.cx).strength(wide ? 0.012 : 0.03))
@@ -265,12 +296,50 @@ export class ProjectMap {
     } else {
       this.simulation.stop()
       this.settle(300)
-      if (!this.reducedMotion) setTimeout(() => this.playHint(), 400)
     }
-    this.root.classList.add('is-ready')
+  }
 
-    this.resizeObserver = new ResizeObserver(() => this.handleResize())
-    this.resizeObserver.observe(this.root)
+  /**
+   * Two columns: tools on the left, projects evenly spaced on the right.
+   * Both are ordered by the average position of their neighbours
+   * (barycentre method) to cut down on crossing links.
+   */
+  layoutLadder() {
+    const ROW_GAP = 40
+    const PAD = 14
+    let projects = this.nodes.filter(node => node.type === 'project')
+    let tools = this.nodes.filter(node => node.type === 'tech')
+
+    const position = (list) => new Map(list.map((node, i) => [node.id, list.length > 1 ? i / (list.length - 1) : 0.5]))
+    const barycentre = (node, positions) => {
+      const values = [...this.neighbours.get(node.id)].map(id => positions.get(id))
+      return values.reduce((sum, v) => sum + v, 0) / values.length
+    }
+    for (let pass = 0; pass < 8; pass++) {
+      const projectPositions = position(projects)
+      tools = [...tools].sort((a, b) => barycentre(a, projectPositions) - barycentre(b, projectPositions))
+      const toolPositions = position(tools)
+      projects = [...projects].sort((a, b) => barycentre(a, toolPositions) - barycentre(b, toolPositions))
+    }
+
+    const height = PAD * 2 + (projects.length - 1) * ROW_GAP
+    this.root.style.height = `${height}px`
+    this.measure()
+
+    const toolX = 4
+    const longestProject = Math.max(...projects.map(node => node.labelWidth))
+    const projectX = Math.max(140, this.width - longestProject - LABEL_OFFSET.project - 4)
+
+    projects.forEach((node, i) => {
+      node.x = projectX
+      node.y = PAD + i * ROW_GAP
+    })
+    const toolGap = (height - PAD * 2) / Math.max(1, tools.length - 1)
+    tools.forEach((node, i) => {
+      node.x = toolX
+      node.y = PAD + i * toolGap
+    })
+    this.tick()
   }
 
   /**
@@ -293,15 +362,23 @@ export class ProjectMap {
   handleResize() {
     const oldWidth = this.width
     const oldHeight = this.height
+    const oldMode = this.mode
     this.measure()
-    if (!this.simulation || (oldWidth === this.width && oldHeight === this.height)) return
+    const mode = window.innerWidth <= MOBILE_BREAKPOINT ? 'ladder' : 'force'
+    if (mode === oldMode && oldWidth === this.width && oldHeight === this.height) return
+
+    // Crossing the breakpoint, or any resize of the ladder, lays out afresh
+    if (mode !== oldMode || mode === 'ladder') {
+      this.layout()
+      return
+    }
+
     // Crossing the phone breakpoint changes the label font size
     this.measureLabels()
-
     const bounds = this.getBounds()
     this.simulation.force('x').x(bounds.cx)
     this.simulation.force('y').y(bounds.cy)
-    if (this.reducedMotion || window.innerWidth <= MOBILE_BREAKPOINT) {
+    if (this.reducedMotion) {
       this.simulation.stop()
       this.simulation.alpha(0.3)
       this.settle(120)
@@ -335,7 +412,7 @@ export class ProjectMap {
   }
 
   tick() {
-    this.clampNodes()
+    if (this.mode === 'force') this.clampNodes()
     this.nodes.forEach(node => {
       node.el.setAttribute('transform', `translate(${node.x.toFixed(1)},${node.y.toFixed(1)})`)
     })
@@ -503,9 +580,8 @@ export class ProjectMap {
   }
 
   positionPreview(node) {
-    const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
-    if (isMobile) {
-      // On phones the preview docks to the bottom of the map
+    if (this.mode === 'ladder') {
+      // On phones the preview is a sheet fixed to the bottom of the screen
       this.preview.style.left = ''
       this.preview.style.top = ''
       return

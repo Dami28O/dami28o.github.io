@@ -230,15 +230,9 @@ body {
 }
 
 /* Page Animations */
-.page-enter {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
 .page-enter-active {
   opacity: 1;
-  transform: translateY(0);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  transition: opacity var(--transition-slow);
 }
 
 /* Page Styles */
@@ -778,24 +772,18 @@ body {
   .home-bio {
     position: static;
   }
+  /* The ladder layout sets the map's height from its rows */
   .home-map {
     position: relative;
     inset: auto;
-    height: 62vh;
-    height: 62svh; /* Stable as the mobile address bar shows and hides */
-    min-height: 28rem;
     margin-bottom: var(--space-xl); /* Room for the caption below */
+  }
+  .project-map {
+    position: relative;
+    inset: auto;
   }
   .map-label {
     font-size: 12px;
-  }
-  /* Phones: tool labels appear only when highlighted, to keep the map open */
-  .map-node.is-tech .map-label {
-    opacity: 0;
-  }
-  .map-node.is-tech.is-linked .map-label,
-  .map-node.is-tech.is-active .map-label {
-    opacity: 1;
   }
   .map-caption {
     right: 0;
@@ -806,11 +794,15 @@ body {
     max-width: none;
     padding-top: var(--space-xs);
   }
+  /* Preview becomes a sheet fixed to the bottom of the screen */
   .map-preview {
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: fixed;
+    left: var(--space-sm);
+    right: var(--space-sm);
+    bottom: calc(var(--space-sm) + env(safe-area-inset-bottom, 0px));
     width: auto;
+    z-index: 50;
+    box-shadow: 0 -1px 0 var(--rule), 0 12px 32px rgb(0 0 0 / 0.25);
     display: grid;
     grid-template-columns: 5.5rem 1fr;
     column-gap: var(--space-sm);
