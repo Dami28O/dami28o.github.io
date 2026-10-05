@@ -79,7 +79,7 @@
       "dates": "2025",
       "group": "AI Applications",
       "description": "Developed InfluX, a social trend intelligence platform that leverages Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) to surface real-time insights from social and search data. The system ingests data via AWS Strands and the Google Search API, with a FastAPI backend orchestrating retrieval, processing and analysis. Retrieved content is embedded using FAISS and clustered with HDBSCAN to identify emerging themes, which are then visualised as interactive graphs and summarised into clear, human-readable insights using an LLM. Built during the AgentVerse Hackathon 2025, the project was awarded 2nd place for its novel approach to trend discovery and analysis.",
-      "technologies": ["AWS Strands", "FastAPI", "RAG", "Python", "Vue.js"],
+      "technologies": ["AWS Strands", "FastAPI", "RAG", "Python", "Vue.js", "Agentic Systems"],
       "images": [],
       "preview": "",
       "externalLink": "https://devpost.com/software/influx-ztcyp4"
@@ -103,7 +103,7 @@
       "dates": "2025",
       "group": "AI Applications",
       "description": "Participated in a project with four of my peers in collaboration with <b>Outshift by Cisco</b>, to highlight agentic capabilities for real life solutions. We designed and implemented an agentic workflow using LangChain and LangGraph, enabling modular coordination of LLM-based agents for design generation, refinement, 3D printing and supervision.",
-      "technologies": ["LangGraph", "LangChain", "Prompt Engineering", "Angular.js"],
+      "technologies": ["LangGraph", "LangChain", "Prompt Engineering", "Angular.js", "Agentic Systems"],
       "images": ["/assets/images/ProjectPics/protalab.png"],
       "preview": "/assets/images/ProjectPics/previews/protalab.webp",
       "externalLink": "https://www.linkedin.com/posts/damilola-ogunleye-8393a5287_you-cant-go-far-in-ai-circles-these-days-activity-7334187470013554689-WVYM?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEWlpG0By4THAEPdgB8epOltVGZsJ_wyr8Q" 
@@ -151,7 +151,7 @@
       "dates": "2024",
       "group": "AI Applications",
       "description": "Participated in Google's BGN Hackathon and developed a web application that highlights Black innovators in engineering, securing both 1st place and 'People's Choice' awards. The application incorporated Google Cloud Vision AI for real-time object detection and the Gemini API for contextual information, utilizing Cloud Storage Triggers for automated image processing.",
-      "technologies": ["Gemini API", "Prompt Engineering", "Computer Vision", "Google Cloud Platform"],
+      "technologies": ["Gemini API", "Prompt Engineering", "Computer Vision", "Google Cloud Platform", "Agentic Systems"],
       "images": [],
       "preview": "",
       "externalLink": "https://github.com/jalliet/spotlight"
