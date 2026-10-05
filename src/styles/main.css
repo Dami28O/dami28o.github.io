@@ -743,53 +743,113 @@ body {
   color: var(--ink);
 }
 
-/* Contact Page */
+/* Contact Page: same content area as the projects page */
 .contact-page {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-height: calc(100% - 6rem);
+  position: absolute;
+  inset: 0;
+}
+
+.contact-scroll {
+  position: absolute;
+  top: 12rem;
+  left: clamp(12rem, 17vw, 15rem);
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding: 0 var(--space-xl) var(--space-2xl) 0;
 }
 
 .contact-content {
-  max-width: 400px;
-  margin-right: var(--space-xl);
+  max-width: 40rem;
+}
+
+.contact-intro {
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+  margin-bottom: var(--space-sm);
+}
+
+.contact-email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--space-md);
+  row-gap: var(--space-xs);
+  margin-bottom: var(--space-2xl);
+}
+
+.contact-email-address {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-xl), 3.2vw, var(--text-2xl));
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition-fast);
+}
+
+.contact-email-address:hover {
+  border-bottom-color: var(--ink-3);
+}
+
+.contact-copy {
+  font-family: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: var(--space-2xs) var(--space-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.contact-copy:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+
+.contact-copy.is-copied {
+  color: var(--ink);
+  border-color: var(--ink);
 }
 
 .contact-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
+  list-style: none;
+  border-top: 1px solid var(--rule);
 }
 
-.contact-link {
-  display: inline-block;
-  width: fit-content;
+.contact-row {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--rule);
   text-decoration: none;
+  color: inherit;
+}
+
+.contact-row:focus-visible {
+  outline-offset: -2px;
+}
+
+.contact-row-label {
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+  padding-top: 0.15em;
+}
+
+.contact-row-value {
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+  transition: color var(--transition-fast);
+}
+
+.contact-row:hover .contact-row-value,
+.contact-row:focus-visible .contact-row-value {
   color: var(--ink);
-  font-size: var(--text-base);
-  position: relative;
-  transition: color var(--transition-base);
-  padding: var(--space-2xs) 0;
-}
-
-.contact-link:hover {
-  color: var(--accent);
-}
-
-.contact-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background-color: var(--accent);
-  transition: width var(--transition-base);
-}
-
-.contact-link:hover::after {
-  width: 100%;
 }
 
 .loading {
@@ -844,12 +904,6 @@ body {
   .name {
     font-size: var(--text-2xl);
   }
-  .contact-content {
-    max-width: none;
-    padding-top: 0;
-    margin-top: 0;
-  }
-
   /* Projects on phones: the page scrolls, one column, no hover image */
   .projects-page,
   .projects-scroll {
@@ -873,22 +927,17 @@ body {
     max-height: 50vh;
   }
 
-  .contact-page {
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: calc(var(--space-2xl) + var(--space-lg));
-    min-height: calc(100vh - 6rem);
+  .contact-page,
+  .contact-scroll {
+    position: static;
+    overflow: visible;
+    padding: 0;
   }
-  .contact-content {
-    max-width: none;
-    margin-right: 0;
-    margin-left: 0;
-    width: 100%;
-    text-align: center;
-    margin-bottom: calc(var(--space-3xl) - var(--space-lg));
+  .contact-row {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
   }
-  .contact-link {
-    margin-inline: auto;
+  .contact-email-address {
+    font-size: var(--text-lg);
   }
 
   /* Home on phones: bio, then the map */
