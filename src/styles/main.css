@@ -319,7 +319,7 @@ body {
   position: absolute;
   top: 7.5rem;
   right: var(--space-xl);
-  z-index: 3;
+  z-index: 2; /* Below the map's preview card */
   width: 14rem;
   padding: var(--space-sm) 1.1rem 1.1rem;
   background: var(--note);
@@ -485,7 +485,7 @@ body {
   background: var(--paper);
   border: 1px solid var(--rule);
   pointer-events: none;
-  z-index: 3;
+  z-index: 4; /* Above the "currently working on" note */
 }
 
 .map-preview-media {
