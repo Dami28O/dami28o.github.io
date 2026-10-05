@@ -79,4 +79,6 @@ cwebp -q 82 -alpha_q 90 -resize 2000 0 public/assets/images/ProjectPics/photo.pn
 
 **Bio:** the home page shows `sections.current.content` from `bio.json`.
 
+**Currently working on:** add `"now": { "text": "…", "updated": "October 2026" }` to `bio.json` to show the yellow note on the desktop home page. Remove it to hide the note.
+
 **Contact and CV:** edit `contact.json`, and replace `public/assets/docs/OGUNLEYE_CV.pdf`.
