@@ -17,8 +17,14 @@ export class Router {
       'projects': Projects,
       'contact': Contact
     }
+    this.titles = {
+      '': 'Damilola Ogunleye',
+      'projects': 'Projects – Damilola Ogunleye',
+      'contact': 'Contact – Damilola Ogunleye'
+    }
     this.currentRoute = ''
     this.currentPage = null
+    this.hasRendered = false
     this.layout = new Layout()
   }
 
@@ -75,10 +81,20 @@ export class Router {
     }
 
     this.currentPage = new PageComponent()
+    document.title = this.titles[route]
 
     const main = document.querySelector('main')
     main.innerHTML = ''
     main.appendChild(this.currentPage.render())
+
+    // After navigating, move focus into the new content so keyboard and
+    // screen reader users start there (pages may focus something more specific)
+    if (this.hasRendered) {
+      requestAnimationFrame(() => {
+        if (!main.contains(document.activeElement)) main.focus({ preventScroll: true })
+      })
+    }
+    this.hasRendered = true
   }
 
   /**

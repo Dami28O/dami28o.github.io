@@ -23,6 +23,7 @@ export class Layout {
     layout.className = 'layout'
 
     layout.innerHTML = `
+      <a class="skip-link" href="#main-content">Skip to content</a>
       <div class="layout-frame">
         <header class="header">
           <div class="header-content">
@@ -34,13 +35,20 @@ export class Layout {
 
         <nav class="navigation"></nav>
 
-        <main class="main-content"></main>
+        <main class="main-content" id="main-content" tabindex="-1"></main>
       </div>
     `
 
     // Mount components
     layout.querySelector('.navigation').appendChild(this.navigation.render())
     layout.querySelector('.theme-toggle-container').appendChild(this.themeToggle.render())
+
+    // Routing uses the URL hash, so the skip link focuses <main> directly
+    // instead of following its href
+    layout.querySelector('.skip-link').addEventListener('click', (e) => {
+      e.preventDefault()
+      layout.querySelector('main').focus()
+    })
 
     return layout
   }

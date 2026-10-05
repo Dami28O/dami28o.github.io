@@ -65,6 +65,7 @@ export class Contact {
 
     container.innerHTML = `
       <div class="contact-content">
+        <h2 class="sr-only">Contact</h2>
         <p class="contact-intro">Drop me an email.</p>
 
         <div class="contact-email">

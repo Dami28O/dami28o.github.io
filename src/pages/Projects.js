@@ -126,6 +126,7 @@ export class Projects {
     if (!groups.includes(indexState.group)) indexState.group = 'All'
 
     this.scroller.innerHTML = `
+      <h2 class="sr-only">Projects</h2>
       <div class="projects-index">
         <div class="projects-list-column">
           ${groups.length > 1 ? `
@@ -227,6 +228,7 @@ export class Projects {
     // The web-sized copy is sharp enough and far lighter than the original
     const image = project.preview || (project.images && project.images[0])
     indexState.lastId = project.id
+    document.title = `${project.shortName || project.name} – Damilola Ogunleye`
 
     this.scroller.innerHTML = `
       <article class="project-detail">

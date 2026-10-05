@@ -175,7 +175,8 @@ export class ProjectMap {
         const { project } = node
         g.setAttribute('tabindex', '0')
         g.setAttribute('role', 'link')
-        g.setAttribute('aria-label', `${project.name}, ${project.dates}. Open project`)
+        // The spoken name starts with the visible label (voice control users say what they see)
+        g.setAttribute('aria-label', `${node.label}, ${project.dates}. Opens ${project.name}`)
         g.innerHTML = `
           <circle class="map-hit" r="16"></circle>
           <circle class="map-ring" r="10"></circle>
@@ -608,12 +609,27 @@ export class ProjectMap {
     const width = this.preview.offsetWidth
     const height = this.preview.offsetHeight
     const labelWidth = LABEL_OFFSET.project + node.labelWidth
+    const clampLeft = (left) => Math.max(16, Math.min(this.width - width - 16, left))
+    const clampTop = (top) => Math.max(16, Math.min(this.height - height - 16, top))
 
-    let left = node.x + labelWidth + gap
-    if (left + width > this.width - 16) left = node.x - width - gap
-    const top = Math.max(16, Math.min(this.height - height - 16, node.y - height / 2))
+    // Try the card beside, below and above the project and keep the spot
+    // that hides the fewest highlighted tools (earlier spots win ties)
+    const linked = this.nodes.filter(other => this.neighbours.get(node.id).has(other.id))
+    const covered = ({ left, top }) => linked.filter(other =>
+      other.x + LABEL_OFFSET[other.type] + other.labelWidth > left && other.x < left + width &&
+      other.y + LABEL_HALF_HEIGHT > top && other.y - LABEL_HALF_HEIGHT < top + height
+    ).length
+    const middle = clampTop(node.y - height / 2)
+    const centred = clampLeft(node.x + labelWidth / 2 - width / 2)
+    const spots = [
+      { left: clampLeft(node.x + labelWidth + gap), top: middle },
+      { left: clampLeft(node.x - width - gap), top: middle },
+      { left: centred, top: clampTop(node.y + gap) },
+      { left: centred, top: clampTop(node.y - height - gap) }
+    ]
+    const { left, top } = spots.reduce((best, spot) => (covered(spot) < covered(best) ? spot : best))
 
-    this.preview.style.left = `${Math.max(16, left)}px`
+    this.preview.style.left = `${left}px`
     this.preview.style.top = `${top}px`
   }
 
