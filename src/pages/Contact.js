@@ -1,7 +1,6 @@
 /**
  * Contact Page Component
  * Displays contact information and social links
- * Features special email handling for neural network recovery
  */
 export class Contact {
   constructor() {
@@ -64,7 +63,7 @@ export class Contact {
   }
 
   /**
-   * Render contact links and handle special email functionality
+   * Render contact links
    * @param {HTMLElement} container - Container element for contact links
    */
   renderContactLinks(container) {
@@ -88,32 +87,5 @@ export class Contact {
         </a>
       </div>
     `
-    
-    // Add special handling for email link to restart neural network if needed
-    const emailLink = container.querySelector('.email-link')
-    if (emailLink) {
-      emailLink.addEventListener('click', () => {
-        // Monitor and restart neural network if it disappears after email client opens
-        setTimeout(() => {
-          const canvas = document.querySelector('.neural-network-container canvas')
-          if (!canvas || canvas.style.display === 'none') {
-            this.restartNeuralNetwork()
-          }
-        }, 100)
-      })
-    }
-  }
-
-  /**
-   * Restart the neural network if it becomes unavailable
-   * Typically used after email client interruption
-   */
-  async restartNeuralNetwork() {
-    // Use the layout's restart method if available
-    if (window.portfolioLayout && typeof window.portfolioLayout.restartNeuralNetwork === 'function') {
-      await window.portfolioLayout.restartNeuralNetwork()
-    } else {
-      console.error('Layout not available for neural network restart')
-    }
   }
 }

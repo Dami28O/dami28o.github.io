@@ -25,9 +25,10 @@ npm run preview
 ## Architecture
 
 **Component System:**
-- `/src/components/` - Reusable UI components (Layout, Navigation, ThemeToggle, Biography, ProjectCard, NeuralNetwork)
+- `/src/components/` - Reusable UI components (Layout, Navigation, ThemeToggle, ProjectCard, ProjectMap)
 - `/src/pages/` - Page components (Home, Projects, Contact)
-- `/src/router.js` - Hash-based SPA routing system
+- `/src/router.js` - Hash-based SPA routing system (`#projects/3` opens project 3)
+- `ProjectMap` - home page centrepiece: d3-force map of projects linked through technologies shared by 2+ projects
 - `/src/main.js` - Application entry point
 
 **Data Management:**
@@ -46,8 +47,8 @@ npm run preview
 
 **Adding New Projects:**
 1. Edit `public/data/projects.json`
-2. Add project object with: id, name, dates, description, technologies, images, externalLink
-3. Images go in `public/assets/images/ProjectPics/`
+2. Add project object with: id, name, shortName (map label), dates, group, description, technologies, images, preview, externalLink
+3. Images go in `public/assets/images/ProjectPics/`; add a ~720px-wide copy to `ProjectPics/previews/` and point `preview` at it (used by the map's hover card)
 
 **Updating Biography:**
 1. Edit `public/data/bio.json`

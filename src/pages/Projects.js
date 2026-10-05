@@ -59,6 +59,7 @@ export class Projects {
     this.loadProjectsData().then(() => {
       this.renderFilters(filtersContainer, projectsList)
       this.renderProjects(projectsList, this.activeGroup)
+      this.openFromHash(page)
     })
     
     // Add entrance animation
@@ -67,6 +68,25 @@ export class Projects {
     })
 
     return page
+  }
+
+  /**
+   * Expand the project named in the URL (#projects/3) and scroll to it
+   * @param {HTMLElement} page - The projects page element
+   */
+  openFromHash(page) {
+    const id = window.location.hash.slice(1).split('/')[1]
+    if (!id) return
+
+    const index = this.projectCards.findIndex(card => String(card.data.id) === id)
+    if (index === -1) return
+
+    const cardElement = page.querySelectorAll('.project-card')[index]
+    this.projectCards[index].toggleExpanded(cardElement)
+    // Scroll only the list; scrollIntoView would also shift the clipped frame
+    const scroller = page.querySelector('.projects-content')
+    scroller.scrollTop += cardElement.getBoundingClientRect().top - scroller.getBoundingClientRect().top
+    cardElement.querySelector('.project-header').focus({ preventScroll: true })
   }
 
   /**
