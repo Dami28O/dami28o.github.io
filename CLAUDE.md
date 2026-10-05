@@ -68,7 +68,7 @@ The site builds to static files and can be deployed to any static hosting servic
 ## Design System
 
 **Typography:** Newsreader (display: name, titles) and Hanken Grotesk (everything else), loaded in `index.html`
-**Colors:** tokens at the top of `src/styles/main.css` (`--paper`, `--ink`, `--ink-2`, `--ink-3`, `--rule`, `--surface`, `--accent`); ultramarine is the only accent. Theme follows the system until the visitor uses the toggle, and is always written to `data-theme` on `<html>`
+**Colors:** tokens at the top of `src/styles/main.css` (`--paper`, `--ink`, `--ink-2`, `--ink-3`, `--rule`, `--surface`, `--accent`); monochrome, with the accent set to the ink colour. Theme follows the system until the visitor uses the toggle, and is always written to `data-theme` on `<html>`
 **Layout:** CSS Grid and Flexbox with generous whitespace
 **Interactions:** Subtle hover states and smooth transitions
 

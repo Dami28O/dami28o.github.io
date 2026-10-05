@@ -6,16 +6,16 @@
 }
 
 /* Layout concept: hairline frame, identity and nav on a quiet left rail,
-   one interactive centrepiece. Ultramarine is the only colour on the page. */
+   one interactive centrepiece. Monochrome: the accent is the ink colour. */
 :root {
   /* Colour (light) */
-  --paper: #F2F3F5;
-  --surface: #E8EAEE;
-  --ink: #14161C;
-  --ink-2: #4A4F5C;
-  --ink-3: #686E7C;
-  --rule: #D5D8DF;
-  --accent: #3342FF;
+  --paper: #F7F7F7;
+  --surface: #EDEDED;
+  --ink: #161616;
+  --ink-2: #4D4D4D;
+  --ink-3: #6E6E6E;
+  --rule: #DEDEDE;
+  --accent: #161616;
 
   /* Typography */
   --font-display: "Newsreader", "Iowan Old Style", Georgia, serif;
@@ -50,15 +50,15 @@
   color-scheme: light;
 }
 
-/* Colour (dark): blueprint navy, accent lifted for contrast */
+/* Colour (dark) */
 [data-theme="dark"] {
-  --paper: #0A0F1C;
-  --surface: #121A2C;
-  --ink: #E6E9F0;
-  --ink-2: #A9B0C2;
-  --ink-3: #7D869C;
-  --rule: #232C42;
-  --accent: #8C98FF;
+  --paper: #0F0F0F;
+  --surface: #1A1A1A;
+  --ink: #EDEDED;
+  --ink-2: #B3B3B3;
+  --ink-3: #858585;
+  --rule: #2E2E2E;
+  --accent: #EDEDED;
 
   color-scheme: dark;
 }
