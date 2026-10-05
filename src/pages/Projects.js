@@ -224,7 +224,8 @@ export class Projects {
     const index = this.projects.indexOf(project)
     const previous = this.projects[index - 1]
     const next = this.projects[index + 1]
-    const image = project.images && project.images[0]
+    // The web-sized copy is sharp enough and far lighter than the original
+    const image = project.preview || (project.images && project.images[0])
     indexState.lastId = project.id
 
     this.scroller.innerHTML = `

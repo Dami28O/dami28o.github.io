@@ -48,7 +48,7 @@ npm run preview
 **Adding New Projects:**
 1. Edit `public/data/projects.json`
 2. Add project object with: id, name, shortName (map label), dates, group, description, technologies, images, preview, externalLink
-3. Images go in `public/assets/images/ProjectPics/`; add a ~720px-wide copy to `ProjectPics/previews/` and point `preview` at it (used by the map's hover card)
+3. Images go in `public/assets/images/ProjectPics/`; add a web-sized WebP copy to `ProjectPics/previews/` and point `preview` at it (used by the map card, the index hover and the project page): `cwebp -q 82 -alpha_q 90 -resize 2000 0 in.png -o previews/in.webp` (use the original width if it is under 2000px)
 
 **Updating Biography:**
 1. Edit `public/data/bio.json`

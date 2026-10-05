@@ -18,7 +18,7 @@
         "AMLAS"
       ],
       "images": ["/assets/images/ProjectPics/gdmrr.jpeg"],
-      "preview": "/assets/images/ProjectPics/previews/gdmrr.jpg",
+      "preview": "/assets/images/ProjectPics/previews/gdmrr.webp",
       "externalLink": "https://github.com/UoY-RoboStar/GoogleDeepMind2026"
     },
     {
@@ -37,7 +37,7 @@
         "Computer Vision"
       ],
       "images": ["/assets/images/ProjectPics/marshgazers_adv.jpg"],
-      "preview": "/assets/images/ProjectPics/previews/marshgazers_adv.jpg",
+      "preview": "/assets/images/ProjectPics/previews/marshgazers_adv.webp",
       "externalLink": ""
     },
     {
@@ -57,7 +57,7 @@
         "Embedded Systems"
       ],
       "images": ["/assets/images/ProjectPics/ExoSuit_v4.png"],
-      "preview": "/assets/images/ProjectPics/previews/ExoSuit_v4.jpg",
+      "preview": "/assets/images/ProjectPics/previews/ExoSuit_v4.webp",
       "externalLink": "https://github.com/Dami28O/COMP0225-Exoskeleton"
     },
     {
@@ -69,7 +69,7 @@
       "description": "Developed a multi-modal <b>Simultaneous Localisation and Mapping (SLAM)</b> system as part of the UCL COMP0222 coursework, combining visual and LiDAR-based approaches to reconstruct environments and estimate trajectories in real time. For visual SLAM, a continuous stream of RGB frames was captured using an <b>Intel RealSense D455</b> depth camera and processed through both <b>COLMAP</b> (Structure-from-Motion) and <b>ORB-SLAM2</b> pipelines; frames were extracted at 5 fps and 10 fps respectively, with trajectories exported in TUM format and quantitatively evaluated using <b>evo</b> (APE and RPE metrics). COLMAP leveraged a FAISS-indexed vocabulary tree for scalable image retrieval and feature matching across keyframes. For 2D LiDAR SLAM, scan data was collected on an <b>RPLIDAR A2M12</b> and aligned incrementally using a <b>point-to-plane ICP</b> scan-to-local-map formulation, with loop closure detected via a two-stage pipeline: spatial proximity filtering followed by a rotation-invariant range histogram descriptor compared using chi-squared distance, verified by ICP inlier ratio before committing a pose-graph edge. An occupancy grid map was built in parallel from the same LiDAR scans to produce a probabilistic 2D floor plan of the environment.",
       "technologies": ["COLMAP", "ORB-SLAM2", "Python", "RPLIDAR A2M12", "Intel RealSense D455"],
       "images": ["/assets/images/ProjectPics/colmap-hw.png"],
-      "preview": "/assets/images/ProjectPics/previews/colmap-hw.jpg",
+      "preview": "/assets/images/ProjectPics/previews/colmap-hw.webp",
       "externalLink": ""
     },
     {
@@ -93,7 +93,7 @@
       "description": "During a 6-week internship with the <b>National Center for Artificial Intelligence and Robotics</b> in Abuja, Nigeria, I prototyped a modular agricultural robot equipped with Wi-Fi monitoring. The system integrates seed-dispensing and furrow-opening mechanisms, and leverages GPS-IMU-Encoder sensor fusion through a Kalman filter for precise navigation. To enhance usability and scalability, I designed a modular interface for different field tasks and implemented ESP8266-based wireless telemetry for real-time monitoring and diagnostics, resulting in improved planting accuracy and throughput compared to traditional methods.",
       "technologies": ["Fusion360", "Sensor Fusion","Arduino", "3D Printing", "Embedded Systems"],
       "images": ["/assets/images/ProjectPics/AGBE_Assembly_ISO.png"],
-      "preview": "/assets/images/ProjectPics/previews/AGBE_Assembly_ISO.png",
+      "preview": "/assets/images/ProjectPics/previews/AGBE_Assembly_ISO.webp",
       "externalLink": "https://github.com/Dami28O/NCAIR-AutonomousSeeding/tree/main"
     },
     {
@@ -105,7 +105,7 @@
       "description": "Participated in a project with four of my peers in collaboration with <b>Outshift by Cisco</b>, to highlight agentic capabilities for real life solutions. We designed and implemented an agentic workflow using LangChain and LangGraph, enabling modular coordination of LLM-based agents for design generation, refinement, 3D printing and supervision.",
       "technologies": ["LangGraph", "LangChain", "Prompt Engineering", "Angular.js"],
       "images": ["/assets/images/ProjectPics/protalab.png"],
-      "preview": "/assets/images/ProjectPics/previews/protalab.png",
+      "preview": "/assets/images/ProjectPics/previews/protalab.webp",
       "externalLink": "https://www.linkedin.com/posts/damilola-ogunleye-8393a5287_you-cant-go-far-in-ai-circles-these-days-activity-7334187470013554689-WVYM?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEWlpG0By4THAEPdgB8epOltVGZsJ_wyr8Q" 
     },
     {
@@ -117,7 +117,7 @@
       "description": "Designed and manufactured a tracked robot rover equipped with a teleoperated, camera-mounted arm for navigating simulated Martian terrain. The rover was controlled via Wi-Fi from a custom mobile interface and featured autonomous QR code recognition and decoding, implemented using MicroPython and Computer Vision on the Nicla Vision Module. This innovative combination of teleoperation and automation earned us 2nd place in the competition and the 'Best Automation' award for our automatic image capture and processing system.",
       "technologies": ["Fusion360", "Ultimaker Cura", "Arduino", "Computer Vision"],
       "images": ["/assets/images/ProjectPics/Marshgazers_CAD.png"],
-      "preview": "/assets/images/ProjectPics/previews/Marshgazers_CAD.png",
+      "preview": "/assets/images/ProjectPics/previews/Marshgazers_CAD.webp",
       "externalLink": "https://www.ucl.ac.uk/engineering/news/ucl-robotics-ai-students-triumph-national-mars-rover-challenge" 
     },
     {
@@ -129,7 +129,7 @@
       "description": "Designed, simulated, and physically implemented an inverted pendulum cartpole system as part of a team of four. Applied model-based systems engineering to guide development and implemented three advanced control strategies - PID, LQR with pole placement, and sliding mode control - benchmarked across custom Python and Gazebo simulations. The final prototype integrated a Kalman filter for state estimation and demonstrated real-time balancing using an embedded Arduino-based controller.",
       "technologies": ["Fusion360", "Arduino", "Control Algorithms", "Embedded Systems"],
       "images": ["/assets/images/ProjectPics/CartPole.png"],
-      "preview": "/assets/images/ProjectPics/previews/CartPole.png",
+      "preview": "/assets/images/ProjectPics/previews/CartPole.webp",
       "externalLink": ""
     },
     {
@@ -141,7 +141,7 @@
       "description": "Created a robotic gripper simulation tool using Python and PyBullet, capable of generating grasp data and evaluating grasp success for multiple gripper types and objects. Key features include realistic physics simulation, customizable parameters, automated success/failure evaluation, and random approach angle generation. Implemented success prediction using machine learning techniques, such as Logistic Regression, Support Vector Machines and Multilayer Perceptron",
       "technologies": ["Python", "Pybullet", "scikit-learn", "Pytorch"],
       "images": ["/assets/images/ProjectPics/Gripper_Classification.png"],
-      "preview": "/assets/images/ProjectPics/previews/Gripper_Classification.png",
+      "preview": "/assets/images/ProjectPics/previews/Gripper_Classification.webp",
       "externalLink": ""
     },
     {
@@ -177,7 +177,7 @@
       "description": "This project is an application designed to recognise and translate ASL (American Sign Language) fingerspelling into corresponding text. It leverages machine learning and computer vision techniques, drawing inspiration from personal experiences with sign language and DeepMind's Project Euphonia, which uses AI to restore speech for individuals with communication difficulties like those with ALS. The application utilises an MLP (Multilayer Perceptron) model built with TensorFlow, which processes hand landmarks obtained from Google's MediaPipe open-source framework. This trained model then classifies and translates ASL fingerspelling gestures in real-time.",
       "technologies": ["Machine Learning", "Computer Vision", "TensorFlow", "Multilayer Perceptron", "Google's MediaPipe API"],
       "images": ["/assets/images/ProjectPics/ASL.png"],
-      "preview": "/assets/images/ProjectPics/previews/ASL.png",
+      "preview": "/assets/images/ProjectPics/previews/ASL.webp",
       "externalLink": "https://github.com/Dami28O/ASL-Translator"
     }
   ]
