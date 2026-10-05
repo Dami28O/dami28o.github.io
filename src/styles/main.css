@@ -918,7 +918,7 @@ body {
 /* Details on the left, portrait on the right */
 .contact-layout {
   display: grid;
-  grid-template-columns: minmax(0, 40rem) 12rem;
+  grid-template-columns: minmax(0, 40rem) minmax(12rem, 19rem);
   gap: var(--space-2xl);
   align-items: start;
 }
@@ -927,11 +927,10 @@ body {
   min-width: 0;
 }
 
-/* Portrait: rectangular 4:5 crop, no rounding, to match the site's edges.
-   12rem wide so the 384px source stays sharp on 2x screens */
+/* Portrait: rectangular 4:5 crop, no rounding, to match the site's edges */
 .contact-portrait {
   margin: 0;
-  width: 12rem;
+  width: 100%;
   aspect-ratio: 4 / 5;
   max-width: 100%;
   background: var(--surface);
@@ -1170,6 +1169,7 @@ body {
   }
   .contact-portrait {
     order: -1;
+    width: 13rem;
   }
 
   .now-note {

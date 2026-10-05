@@ -83,8 +83,10 @@ cwebp -q 82 -alpha_q 90 -resize 2000 0 public/assets/images/ProjectPics/photo.pn
 
 **Contact and CV:** edit `contact.json`, and replace `public/assets/docs/OGUNLEYE_CV.pdf`.
 
-**Portrait (contact page):** save a WebP and set `photo.src` in `contact.json`. It is cropped to 4:5; set `photo.mono` to `true` for black and white. With no `src`, a placeholder frame shows in `npm run dev` only and nothing appears on the live site.
+**Portrait (contact page):** the full-size original lives in `assets-src/` (tracked, not deployed). Crop it to 4:5, save a WebP and set `photo.src` in `contact.json`. It is cropped to 4:5; set `photo.mono` to `true` for black and white. With no `src`, a placeholder frame shows in `npm run dev` only and nothing appears on the live site.
 
 ```bash
-cwebp -q 85 -resize 0 1500 portrait.jpg -o public/assets/images/portrait.webp
+# crop to 4:5 (height width, then offset y x), then convert
+sips -c 1690 1352 --cropOffset 60 1050 assets-src/dami-ogunleye-portrait.jpg --out /tmp/portrait-crop.jpg
+cwebp -q 84 -resize 0 1250 /tmp/portrait-crop.jpg -o public/assets/images/dami-ogunleye-portrait.webp
 ```
