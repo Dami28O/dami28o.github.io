@@ -246,14 +246,15 @@ export class Projects {
                 <img src="${image}" alt="${escapeHtml(project.name)}" />
               </figure>
             ` : ''}
-            <dl class="project-detail-facts">
-              <dt>Tools</dt>
-              <dd>${escapeHtml(project.technologies.join(', '))}</dd>
+            <div class="project-detail-facts">
+              <h3 class="project-facts-label">Tools</h3>
+              <ul class="project-tools">
+                ${project.technologies.map(tech => `<li>${escapeHtml(tech)}</li>`).join('')}
+              </ul>
               ${project.externalLink ? `
-                <dt>Link</dt>
-                <dd><a class="project-detail-link" href="${project.externalLink}" target="_blank" rel="noopener noreferrer">View project</a></dd>
+                <a class="project-detail-link" href="${project.externalLink}" target="_blank" rel="noopener noreferrer">View project</a>
               ` : ''}
-            </dl>
+            </div>
           </aside>
         </div>
 
