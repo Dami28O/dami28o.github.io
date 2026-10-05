@@ -39,7 +39,7 @@ export class ProjectCard {
         <div class="project-technologies">
           ${this.data.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
         </div>
-        ${this.data.externalLink ? `<a href="${this.data.externalLink}" target="_blank" rel="noopener noreferrer" class="project-link">View Project →</a>` : ''}
+        ${this.data.externalLink ? `<a href="${this.data.externalLink}" target="_blank" rel="noopener noreferrer" class="project-link">View project</a>` : ''}
       </div>
     `
     

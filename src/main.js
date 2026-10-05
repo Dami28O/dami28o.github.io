@@ -17,10 +17,7 @@ class App {
    * Sets up theme and starts the router
    */
   init() {
-    // Initialize theme from localStorage or default to light
-    const savedTheme = localStorage.getItem('theme') || 'light'
-    document.documentElement.setAttribute('data-theme', savedTheme)
-    
+    // Theme is resolved before first paint by the inline script in index.html
     // Start the router for page navigation
     this.router.init()
   }

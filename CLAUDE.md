@@ -40,7 +40,7 @@ npm run preview
 - CSS custom properties for theming
 - Mobile-first responsive design
 - Smooth transitions and microinteractions
-- Light/dark theme toggle with localStorage persistence
+- Light/dark theme follows the system setting; the toggle saves an explicit choice in localStorage
 
 ## Content Updates
 
@@ -67,8 +67,8 @@ The site builds to static files and can be deployed to any static hosting servic
 
 ## Design System
 
-**Typography:** Raleway with light weights (200-500)
-**Colors:** CSS custom properties for light/dark themes
+**Typography:** Newsreader (display: name, titles) and Hanken Grotesk (everything else), loaded in `index.html`
+**Colors:** tokens at the top of `src/styles/main.css` (`--paper`, `--ink`, `--ink-2`, `--ink-3`, `--rule`, `--surface`, `--accent`); ultramarine is the only accent. Theme follows the system until the visitor uses the toggle, and is always written to `data-theme` on `<html>`
 **Layout:** CSS Grid and Flexbox with generous whitespace
 **Interactions:** Subtle hover states and smooth transitions
 
