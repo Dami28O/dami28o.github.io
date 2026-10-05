@@ -1,15 +1,30 @@
-import { ProjectCard } from '../components/ProjectCard.js'
+const MOBILE_BREAKPOINT = 768
+
+// Survives page re-renders, so returning from a project restores the list
+const indexState = {
+  group: 'All',
+  scrollTop: 0,
+  lastId: null
+}
+
+const escapeHtml = (value) => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
 
 /**
  * Projects Page Component
- * Displays a list of portfolio projects in expandable cards
- * Features scrollable content and project image galleries
+ * #projects shows the index; #projects/<id> shows one project full width
+ * Features:
+ * - Group filters with counts
+ * - Hover or focus a row to preview its image (desktop)
+ * - Project pages with previous/next navigation; Escape returns to the index
  */
 export class Projects {
   constructor() {
-    this.projectsData = null
-    this.projectCards = []
-    this.activeGroup = 'All'
+    this.projects = []
+    this.onKeydown = null
   }
 
   /**
@@ -22,17 +37,33 @@ export class Projects {
     return value.trim().replace(/\s+/g, ' ').toLowerCase()
   }
 
-  /**
-   * Load projects data from JSON file
-   * @returns {Promise} Promise that resolves when data is loaded
-   */
   async loadProjectsData() {
     try {
       const response = await fetch('/data/projects.json')
-      this.projectsData = await response.json()
+      const data = await response.json()
+      this.projects = data.projects || []
     } catch (error) {
       console.error('Error loading projects data:', error)
-      this.projectsData = { projects: [] }
+      this.projects = []
+    }
+  }
+
+  isMobile() {
+    return window.innerWidth <= MOBILE_BREAKPOINT
+  }
+
+  /**
+   * Read or set the scroll position of whichever element scrolls this page
+   */
+  getScroll() {
+    return this.isMobile() ? window.scrollY : this.scroller.scrollTop
+  }
+
+  setScroll(value) {
+    if (this.isMobile()) {
+      window.scrollTo(0, value)
+    } else {
+      this.scroller.scrollTop = value
     }
   }
 
@@ -43,26 +74,23 @@ export class Projects {
   render() {
     const page = document.createElement('div')
     page.className = 'page projects-page'
-    
     page.innerHTML = `
-      <div class="projects-content">
-        <div class="projects-filters" role="tablist" aria-label="Project groups"></div>
-        <div class="projects-list"></div>
+      <div class="projects-scroll">
+        <p class="loading">Loading projects</p>
       </div>
     `
-    
-    const filtersContainer = page.querySelector('.projects-filters')
-    const projectsList = page.querySelector('.projects-list')
-    projectsList.innerHTML = '<p class="loading">Loading projects...</p>'
-    
-    // Load and render projects
+    this.scroller = page.querySelector('.projects-scroll')
+
     this.loadProjectsData().then(() => {
-      this.renderFilters(filtersContainer, projectsList)
-      this.renderProjects(projectsList, this.activeGroup)
-      this.openFromHash(page)
+      const id = window.location.hash.slice(1).split('/')[1]
+      const project = id && this.projects.find(p => String(p.id) === id)
+      if (project) {
+        this.renderDetail(project)
+      } else {
+        this.renderIndex()
+      }
     })
-    
-    // Add entrance animation
+
     requestAnimationFrame(() => {
       page.classList.add('page-enter-active')
     })
@@ -71,130 +99,205 @@ export class Projects {
   }
 
   /**
-   * Expand the project named in the URL (#projects/3) and scroll to it
-   * @param {HTMLElement} page - The projects page element
-   */
-  openFromHash(page) {
-    const id = window.location.hash.slice(1).split('/')[1]
-    if (!id) return
-
-    const index = this.projectCards.findIndex(card => String(card.data.id) === id)
-    if (index === -1) return
-
-    const cardElement = page.querySelectorAll('.project-card')[index]
-    this.projectCards[index].toggleExpanded(cardElement)
-    // Scroll only the list; scrollIntoView would also shift the clipped frame
-    const scroller = page.querySelector('.projects-content')
-    scroller.scrollTop += cardElement.getBoundingClientRect().top - scroller.getBoundingClientRect().top
-    cardElement.querySelector('.project-header').focus({ preventScroll: true })
-  }
-
-  /**
    * Get available filter groups from project data
    * @returns {string[]} List of group labels including the default "All"
    */
   getFilterGroups() {
-    if (!this.projectsData || !this.projectsData.projects) {
-      return ['All']
-    }
-
     const groups = new Map()
-
-    this.projectsData.projects.forEach(project => {
+    this.projects.forEach(project => {
       if (typeof project.group === 'string') {
         const label = project.group.trim()
         const normalized = this.normalizeGroup(label)
-
-        if (label && normalized && !groups.has(normalized)) {
-          groups.set(normalized, label)
-        }
+        if (label && !groups.has(normalized)) groups.set(normalized, label)
       }
     })
-
     return ['All', ...groups.values()]
   }
 
-  /**
-   * Render filter controls above the project list
-   * @param {HTMLElement} container - Filter controls container
-   * @param {HTMLElement} projectsList - Project cards container
-   */
-  renderFilters(container, projectsList) {
+  countInGroup(group) {
+    if (group === 'All') return this.projects.length
+    return this.projects.filter(p => this.normalizeGroup(p.group) === this.normalizeGroup(group)).length
+  }
+
+  /* ---------- Index ---------- */
+
+  renderIndex() {
     const groups = this.getFilterGroups()
+    if (!groups.includes(indexState.group)) indexState.group = 'All'
 
-    // Hide the filter bar when there is no custom grouping yet.
-    if (groups.length <= 1) {
-      container.innerHTML = ''
-      container.style.display = 'none'
-      this.activeGroup = 'All'
-      return
-    }
+    this.scroller.innerHTML = `
+      <div class="projects-index">
+        <div class="projects-list-column">
+          ${groups.length > 1 ? `
+            <div class="projects-filters" role="group" aria-label="Filter projects">
+              ${groups.map(group => `
+                <button type="button" class="project-filter-button" data-group="${escapeHtml(group)}"
+                  aria-pressed="${group === indexState.group}">
+                  ${escapeHtml(group)} <span class="project-filter-count">${this.countInGroup(group)}</span>
+                </button>
+              `).join('')}
+            </div>
+          ` : ''}
+          <ol class="project-list"></ol>
+        </div>
+        <figure class="project-hover" aria-hidden="true" hidden>
+          <div class="project-hover-media"><img alt="" /></div>
+        </figure>
+      </div>
+    `
 
-    container.style.display = 'flex'
-    container.textContent = ''
-
-    groups.forEach(group => {
-      const button = document.createElement('button')
-      const isActive = group === this.activeGroup
-
-      button.className = `project-filter-button${isActive ? ' is-active' : ''}`
-      button.type = 'button'
-      button.dataset.group = group
-      button.setAttribute('role', 'tab')
-      button.setAttribute('aria-selected', isActive ? 'true' : 'false')
-      button.textContent = group
-
+    this.scroller.querySelectorAll('.project-filter-button').forEach(button => {
       button.addEventListener('click', () => {
-        this.activeGroup = button.dataset.group || 'All'
-        this.updateActiveFilterState(container)
-        this.renderProjects(projectsList, this.activeGroup)
+        indexState.group = button.dataset.group
+        this.scroller.querySelectorAll('.project-filter-button').forEach(b => {
+          b.setAttribute('aria-pressed', String(b === button))
+        })
+        this.renderRows()
       })
+    })
 
-      container.appendChild(button)
+    this.renderRows()
+
+    // Coming back from a project: restore the list and focus where we were
+    requestAnimationFrame(() => {
+      this.setScroll(indexState.scrollTop)
+      if (indexState.lastId != null) {
+        const row = this.scroller.querySelector(`.project-row[data-id="${indexState.lastId}"]`)
+        if (row) row.focus({ preventScroll: true })
+      }
     })
   }
 
-  /**
-   * Update active/inactive visual states for filter controls
-   * @param {HTMLElement} container - Filter controls container
-   */
-  updateActiveFilterState(container) {
-    const filterButtons = container.querySelectorAll('.project-filter-button')
+  renderRows() {
+    const list = this.scroller.querySelector('.project-list')
+    const hover = this.scroller.querySelector('.project-hover')
+    const hoverImg = hover.querySelector('img')
 
-    filterButtons.forEach(button => {
-      const group = button.dataset.group || 'All'
-      const isActive = group === this.activeGroup
+    const visible = this.projects.filter(project =>
+      indexState.group === 'All' ||
+      this.normalizeGroup(project.group) === this.normalizeGroup(indexState.group)
+    )
 
-      button.classList.toggle('is-active', isActive)
-      button.setAttribute('aria-selected', isActive ? 'true' : 'false')
-    })
-  }
-
-  /**
-   * Render individual project cards
-   * @param {HTMLElement} container - Container element for project cards
-   * @param {string} group - Active group filter
-   */
-  renderProjects(container, group = 'All') {
-    if (!this.projectsData || !this.projectsData.projects) return
-
-    this.projectCards = []
-    container.innerHTML = ''
-
-    const filteredProjects = this.projectsData.projects.filter(project => {
-      if (this.normalizeGroup(group) === this.normalizeGroup('All')) return true
-      return this.normalizeGroup(project.group) === this.normalizeGroup(group)
-    })
-
-    if (filteredProjects.length === 0) {
-      container.innerHTML = '<p class="loading">No projects in this group yet.</p>'
+    if (visible.length === 0) {
+      list.innerHTML = '<li class="loading">No projects in this group yet.</li>'
       return
     }
 
-    filteredProjects.forEach(project => {
-      const projectCard = new ProjectCard(project)
-      this.projectCards.push(projectCard)
-      container.appendChild(projectCard.render())
+    list.innerHTML = visible.map(project => `
+      <li>
+        <a class="project-row" href="#projects/${project.id}" data-id="${project.id}">
+          <span class="project-row-title">${escapeHtml(project.name)}</span>
+          <span class="project-row-year">${escapeHtml(project.dates)}</span>
+          <span class="project-row-tools">${escapeHtml(project.technologies.slice(0, 3).join(', '))}</span>
+        </a>
+      </li>
+    `).join('')
+
+    const showPreview = (project) => {
+      if (!project.preview || this.isMobile()) {
+        hover.hidden = true
+        return
+      }
+      hoverImg.src = project.preview
+      hover.hidden = false
+    }
+    const hidePreview = () => { hover.hidden = true }
+
+    list.querySelectorAll('.project-row').forEach(row => {
+      const project = visible.find(p => String(p.id) === row.dataset.id)
+      row.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') showPreview(project) })
+      row.addEventListener('focus', () => showPreview(project))
+      row.addEventListener('click', () => {
+        indexState.scrollTop = this.getScroll()
+        indexState.lastId = project.id
+      })
     })
+    list.addEventListener('pointerleave', hidePreview)
+    list.addEventListener('focusout', (e) => {
+      if (!list.contains(e.relatedTarget)) hidePreview()
+    })
+  }
+
+  /* ---------- Project page ---------- */
+
+  renderDetail(project) {
+    const index = this.projects.indexOf(project)
+    const previous = this.projects[index - 1]
+    const next = this.projects[index + 1]
+    const image = project.images && project.images[0]
+    indexState.lastId = project.id
+
+    this.scroller.innerHTML = `
+      <article class="project-detail">
+        <a class="project-back" href="#projects">All projects</a>
+
+        <header class="project-detail-header">
+          <h2 class="project-detail-title" tabindex="-1">${escapeHtml(project.name)}</h2>
+          <p class="project-detail-meta">${escapeHtml(project.dates)}${project.group ? `, ${escapeHtml(project.group)}` : ''}</p>
+        </header>
+
+        ${image ? `
+          <figure class="project-detail-media">
+            <img src="${image}" alt="${escapeHtml(project.name)}" />
+          </figure>
+        ` : ''}
+
+        <div class="project-detail-body">
+          <div class="project-detail-description">${project.description}</div>
+          <aside class="project-detail-facts" aria-label="Project details">
+            <dl>
+              <div>
+                <dt>Tools</dt>
+                <dd>
+                  <ul class="project-tools">
+                    ${project.technologies.map(tech => `<li>${escapeHtml(tech)}</li>`).join('')}
+                  </ul>
+                </dd>
+              </div>
+              <div>
+                <dt>When</dt>
+                <dd>${escapeHtml(project.dates)}</dd>
+              </div>
+              ${project.group ? `
+                <div>
+                  <dt>Area</dt>
+                  <dd>${escapeHtml(project.group)}</dd>
+                </div>
+              ` : ''}
+            </dl>
+            ${project.externalLink ? `
+              <a class="project-detail-link" href="${project.externalLink}" target="_blank" rel="noopener noreferrer">View project</a>
+            ` : ''}
+          </aside>
+        </div>
+
+        <nav class="project-pager" aria-label="More projects">
+          ${previous ? `
+            <a class="project-pager-link is-previous" href="#projects/${previous.id}">
+              <span class="project-pager-label">Previous project</span>
+              <span class="project-pager-title">${escapeHtml(previous.shortName || previous.name)}</span>
+            </a>
+          ` : '<span></span>'}
+          ${next ? `
+            <a class="project-pager-link is-next" href="#projects/${next.id}">
+              <span class="project-pager-label">Next project</span>
+              <span class="project-pager-title">${escapeHtml(next.shortName || next.name)}</span>
+            </a>
+          ` : ''}
+        </nav>
+      </article>
+    `
+
+    this.setScroll(0)
+    this.scroller.querySelector('.project-detail-title').focus({ preventScroll: true })
+
+    this.onKeydown = (e) => {
+      if (e.key === 'Escape') window.location.hash = 'projects'
+    }
+    document.addEventListener('keydown', this.onKeydown)
+  }
+
+  destroy() {
+    if (this.onKeydown) document.removeEventListener('keydown', this.onKeydown)
   }
 }

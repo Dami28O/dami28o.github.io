@@ -25,16 +25,16 @@ npm run preview
 ## Architecture
 
 **Component System:**
-- `/src/components/` - Reusable UI components (Layout, Navigation, ThemeToggle, ProjectCard, ProjectMap)
+- `/src/components/` - Reusable UI components (Layout, Navigation, ThemeToggle, ProjectMap)
 - `/src/pages/` - Page components (Home, Projects, Contact)
-- `/src/router.js` - Hash-based SPA routing system (`#projects/3` opens project 3)
+- `/src/router.js` - Hash-based SPA routing system: `#projects` is the index, `#projects/3` is project 3's full-width page
 - `ProjectMap` - home page centrepiece: d3-force map of projects linked through technologies shared by 2+ projects
 - `/src/main.js` - Application entry point
 
 **Data Management:**
 - `/public/data/*.json` - Content data files for easy updates
 - `bio.json` - Personal information and biography
-- `projects.json` - Project data with expandable cards
+- `projects.json` - Project data for the map, the projects index and project pages
 - `contact.json` - Contact links and CV information
 
 **Styling:**
@@ -76,7 +76,7 @@ The site builds to static files and can be deployed to any static hosting servic
 ## Key Features
 
 - Hash-based routing for SPA navigation
-- Expandable project cards with smooth animations
+- Projects index with hover image previews, and a full-width page per project
 - Theme persistence across sessions
 - Responsive design for mobile/desktop
 - Component-based architecture for easy maintenance
