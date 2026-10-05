@@ -142,6 +142,7 @@ export class ProjectMap {
         <div class="map-preview-media"><img alt="" /></div>
         <p class="map-preview-title"></p>
         <p class="map-preview-meta"></p>
+        <p class="map-preview-action">Open project</p>
       </div>
       <p class="map-caption"></p>
     `
@@ -153,6 +154,13 @@ export class ProjectMap {
     this.root = root
     this.svg = root.querySelector('.map-svg')
     this.preview = root.querySelector('.map-preview')
+
+    // On phones the preview sheet is tappable and opens the project
+    this.preview.addEventListener('click', () => {
+      if (this.mode === 'ladder' && this.activeNode?.type === 'project') {
+        this.onOpen(this.activeNode.project.id)
+      }
+    })
     this.createElements()
 
     requestAnimationFrame(() => this.start())
@@ -557,9 +565,18 @@ export class ProjectMap {
       // Only keyboard focus previews; pointer focus is handled above,
       // otherwise a first tap on touch would preview and open at once
       el.addEventListener('focus', () => {
-        if (el.matches(':focus-visible')) this.setActive(node)
+        if (el.matches(':focus-visible')) {
+          this.setActive(node)
+          this.focusActivated = node
+        }
       })
-      el.addEventListener('blur', () => this.clearActive())
+      // Only undo selections that keyboard focus made; on touch, tapping the
+      // preview sheet moves focus away and must not hide the sheet first
+      el.addEventListener('blur', () => {
+        if (this.focusActivated !== node) return
+        this.focusActivated = null
+        this.clearActive()
+      })
       el.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()

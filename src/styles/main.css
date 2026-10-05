@@ -589,6 +589,26 @@ body {
   padding: var(--space-2xs) var(--space-2xs) var(--space-2xs);
 }
 
+/* Only shown on the phone sheet, where the card itself opens the project */
+.map-preview-action {
+  display: none;
+  font-size: var(--text-xs);
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  padding: 0 var(--space-2xs) var(--space-2xs);
+}
+
+.project-map.is-ladder .map-preview {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.project-map.is-ladder .map-preview-action {
+  display: block;
+}
+
 .map-caption {
   position: absolute;
   right: var(--space-xl);
@@ -1229,7 +1249,7 @@ body {
     display: none;
   }
   .map-preview-media {
-    grid-row: span 2;
+    grid-row: span 3;
     margin-bottom: 0;
   }
 }
