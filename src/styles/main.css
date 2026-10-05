@@ -336,9 +336,78 @@ body {
   margin-bottom: var(--space-2xs);
 }
 
+/* The item works like a to-do: a box, and a strike that draws across */
+.now-note-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.now-note-item:focus-visible {
+  outline: 2px solid var(--note-ink);
+  outline-offset: 3px;
+}
+
+.now-note-box {
+  position: relative;
+  flex: none;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-top: 0.2rem;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+}
+
+/* Tick drawn from two borders, shown when done */
+.now-note-box::after {
+  content: '';
+  position: absolute;
+  left: 0.22rem;
+  top: 0.02rem;
+  width: 0.25rem;
+  height: 0.5rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) scale(0);
+  transition: transform 0.2s var(--ease);
+}
+
+.now-note-item[aria-pressed="true"] .now-note-box::after {
+  transform: rotate(45deg) scale(1);
+}
+
 .now-note-text {
   font-size: var(--text-sm);
   line-height: 1.5;
+  transition: opacity 0.35s var(--ease);
+}
+
+/* Strike line is a background that grows from 0 to full width;
+   cloned per line so wrapped text is struck on every line */
+.now-note-strike {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 58%;
+  background-size: 0% 1.5px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 0.35s var(--ease);
+}
+
+.now-note-item[aria-pressed="true"] .now-note-text {
+  opacity: 0.65;
+}
+
+.now-note-item[aria-pressed="true"] .now-note-strike {
+  background-size: 100% 1.5px;
 }
 
 .now-note-date {

@@ -68,11 +68,21 @@ export class Home {
     note.setAttribute('aria-label', 'Currently working on')
     note.innerHTML = `
       <p class="now-note-label">Currently working on</p>
-      <p class="now-note-text"></p>
+      <button type="button" class="now-note-item" aria-pressed="false">
+        <span class="now-note-box" aria-hidden="true"></span>
+        <span class="now-note-text"><span class="now-note-strike"></span></span>
+      </button>
       ${now.updated ? '<p class="now-note-date"></p>' : ''}
     `
-    note.querySelector('.now-note-text').textContent = now.text
+    note.querySelector('.now-note-strike').textContent = now.text
     if (now.updated) note.querySelector('.now-note-date').textContent = `Updated ${now.updated}`
+
+    // Click to tick it off like a to-do item, click again to undo
+    const item = note.querySelector('.now-note-item')
+    item.addEventListener('click', () => {
+      const done = item.getAttribute('aria-pressed') !== 'true'
+      item.setAttribute('aria-pressed', String(done))
+    })
     return note
   }
 
