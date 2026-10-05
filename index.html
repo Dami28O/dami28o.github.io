@@ -3,12 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
+    <title>Damilola Ogunleye</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cstyle%3Ecircle%7Bfill:%23161616%7D@media(prefers-color-scheme:dark)%7Bcircle%7Bfill:%23EDEDED%7D%7D%3C/style%3E%3Ccircle cx='16' cy='16' r='7'/%3E%3C/svg%3E">
+    <script>
+      // Resolve the theme before first paint: saved choice, else system setting
+      (function () {
+        var saved = null
+        try { saved = localStorage.getItem('theme') } catch (e) {}
+        var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+      })()
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/assets/index-Upx68NQL.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-DYFa1vpF.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/index-D38zEn-b.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Ct6GVokF.css">
 </head>
 <body>
     <div id="app"></div>
