@@ -82,3 +82,9 @@ cwebp -q 82 -alpha_q 90 -resize 2000 0 public/assets/images/ProjectPics/photo.pn
 **Currently working on:** add `"now": { "text": "…", "updated": "October 2026" }` to `bio.json` to show the yellow note on the desktop home page. Remove it to hide the note.
 
 **Contact and CV:** edit `contact.json`, and replace `public/assets/docs/OGUNLEYE_CV.pdf`.
+
+**Portrait (contact page):** save a WebP and set `photo.src` in `contact.json`. It is cropped to 4:5; set `photo.mono` to `true` for black and white. With no `src`, a placeholder frame shows in `npm run dev` only and nothing appears on the live site.
+
+```bash
+cwebp -q 85 -resize 0 1500 portrait.jpg -o public/assets/images/portrait.webp
+```

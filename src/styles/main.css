@@ -915,8 +915,47 @@ body {
   padding: 0 var(--space-xl) var(--space-2xl) 0;
 }
 
+/* Details on the left, portrait on the right */
+.contact-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 40rem) minmax(12rem, 20rem);
+  gap: var(--space-2xl);
+  align-items: start;
+}
+
 .contact-content {
-  max-width: 40rem;
+  min-width: 0;
+}
+
+/* Portrait: rectangular 4:5 crop, no rounding, to match the site's edges */
+.contact-portrait {
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  max-width: 100%;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.contact-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contact-portrait.is-mono img {
+  filter: grayscale(1);
+}
+
+.contact-portrait.is-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  border: 1px dashed var(--rule);
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--ink-3);
 }
 
 .contact-intro {
@@ -1121,6 +1160,15 @@ body {
   }
   .contact-email-address {
     font-size: var(--text-lg);
+  }
+  /* Phones: smaller portrait above the details */
+  .contact-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-lg);
+  }
+  .contact-portrait {
+    order: -1;
+    width: 11rem;
   }
 
   .now-note {

@@ -61,9 +61,10 @@ export class Contact {
   }
 
   renderContact(container) {
-    const { links, cv } = this.contactData
+    const { links, cv, photo } = this.contactData
 
     container.innerHTML = `
+      <div class="contact-layout">
       <div class="contact-content">
         <h2 class="sr-only">Contact</h2>
         <p class="contact-intro">Drop me an email.</p>
@@ -94,6 +95,8 @@ export class Contact {
           </li>
         </ul>
       </div>
+      ${this.renderPortrait(photo)}
+      </div>
     `
 
     const button = container.querySelector('.contact-copy')
@@ -112,6 +115,28 @@ export class Contact {
         button.textContent = 'Press Ctrl+C to copy'
       }
     })
+  }
+
+  /**
+   * Portrait beside the contact details. Without a photo, a placeholder
+   * frame shows in development only, so a stand-in never ships
+   * @param {{src: string, alt: string, mono?: boolean}} [photo] - From contact.json
+   * @returns {string} HTML
+   */
+  renderPortrait(photo) {
+    if (photo?.src) {
+      return `
+        <figure class="contact-portrait${photo.mono ? ' is-mono' : ''}">
+          <img src="${photo.src}" alt="${photo.alt || ''}" />
+        </figure>
+      `
+    }
+    if (!import.meta.env.DEV) return ''
+    return `
+      <figure class="contact-portrait is-placeholder" aria-hidden="true">
+        <span>Portrait goes here<br />(set photo.src in contact.json)</span>
+      </figure>
+    `
   }
 
   showCopied(button) {

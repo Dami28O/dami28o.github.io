@@ -30,7 +30,7 @@ npm run deploy    # build, copy CNAME, publish dist/ to the gh-pages branch
 All content is in `public/data/` (tracked in git):
 - `projects.json` - fields: id, name, shortName (map label), dates, group, description (HTML; `<b>` only for partner organisations), technologies, images, preview, externalLink
 - `bio.json` - `sections.current.content` is shown on the home page; optional `now: { text, updated }` shows the yellow "currently working on" note (desktop home only, the site's one colour, `--note` token)
-- `contact.json` - links and CV path
+- `contact.json` - links, CV path, and `photo: { src, alt, mono }` for the contact page portrait (4:5 crop; dev-only placeholder when `src` is empty)
 
 Images: originals in `public/assets/images/ProjectPics/`; the site uses WebP copies in `ProjectPics/previews/` via the `preview` field:
 `cwebp -q 82 -alpha_q 90 -resize 2000 0 in.png -o previews/in.webp` (use the original width if under 2000px).

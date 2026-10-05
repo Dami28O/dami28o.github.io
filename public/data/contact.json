@@ -7,5 +7,10 @@
   "cv": {
     "filename": "OGUNLEYE_CV.pdf",
     "path": "/assets/docs/OGUNLEYE_CV.pdf"
+  },
+  "photo": {
+    "src": "",
+    "alt": "Portrait of Damilola Ogunleye",
+    "mono": false
   }
 }
