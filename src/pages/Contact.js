@@ -65,7 +65,7 @@ export class Contact {
 
     container.innerHTML = `
       <div class="contact-content">
-        <p class="contact-intro">Email is the quickest way to reach me.</p>
+        <p class="contact-intro">Drop me an email.</p>
 
         <div class="contact-email">
           <a class="contact-email-address" href="mailto:${links.email}">${links.email.replace('@', '<wbr>@')}</a>

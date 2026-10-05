@@ -24,7 +24,7 @@
     {
       "id": 2,
       "name": "UKSEDS Olympus Rover Trials Advanced Stream",
-      "shortName": "Olympus Rover, advanced",
+      "shortName": "Olympus Rover Advanced",
       "dates": "2025-2026",
       "group": "Robotic Systems",
       "description": "Competed in the <b>UKSEDS Olympus Rover Trials – Advanced Stream</b>, developing a rover capable of autonomously navigating a planetary-style environment and collecting regolith samples. Over nine months, I led the autonomy subteam, overseeing the development and integration of the rover's software and perception systems. <br></br> We developed a ROS 2-based autonomous navigation stack integrating LiDAR and RGB-D camera data for perception, with <b>Nav2</b> used for autonomous navigation and motion planning. The team also developed a Gazebo simulation environment to enable early testing and iterative development before deployment to physical hardware. A key engineering challenge was optimising the autonomy stack for resource-constrained deployment on an NVIDIA Jetson Orin Nano and custom PCB, where the system successfully operated during the competition. <br></br> As Autonomy Subteam Lead, I coordinated software development with the mechanical and electrical teams, delegated technical work and drove architectural decisions through iterative performance evaluation. This involved balancing algorithmic performance, hardware limitations and system-level integration requirements to deliver a functioning autonomous rover within the competition timeline.",
@@ -111,7 +111,7 @@
     {
       "id": 8,
       "name": "UKSEDS Olympus Rover Trials Basic Stream",
-      "shortName": "Olympus Rover, basic",
+      "shortName": "Olympus Rover Basic",
       "dates": "2025",
       "group": "Robotic Systems",
       "description": "Designed and manufactured a tracked robot rover equipped with a teleoperated, camera-mounted arm for navigating simulated Martian terrain. The rover was controlled via Wi-Fi from a custom mobile interface and featured autonomous QR code recognition and decoding, implemented using MicroPython and Computer Vision on the Nicla Vision Module. This innovative combination of teleoperation and automation earned us 2nd place in the competition and the 'Best Automation' award for our automatic image capture and processing system.",

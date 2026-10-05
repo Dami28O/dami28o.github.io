@@ -797,23 +797,25 @@ body {
 .contact-copy {
   font-family: inherit;
   font-size: var(--text-sm);
-  color: var(--ink-2);
+  color: var(--ink-3);
   background: none;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  padding: var(--space-2xs) var(--space-sm);
+  border: none;
+  padding: var(--space-2xs) 0;
   cursor: pointer;
-  transition: color var(--transition-fast), border-color var(--transition-fast);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
 }
 
 .contact-copy:hover {
   color: var(--ink);
-  border-color: var(--ink-3);
+  text-decoration-color: currentColor;
 }
 
 .contact-copy.is-copied {
   color: var(--ink);
-  border-color: var(--ink);
 }
 
 .contact-list {
