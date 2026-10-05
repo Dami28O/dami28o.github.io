@@ -418,19 +418,21 @@ export class ProjectMap {
       node.x = Math.max(bounds.left + 8, Math.min(bounds.right - labelRoom, node.x))
       node.y = Math.max(bounds.top + 8, Math.min(bounds.bottom - 8, node.y))
 
-      // Push a node and its label out of any obstacle, left or down,
-      // whichever is the shorter move
+      // Push a node and its label out of any obstacle by the shortest move
       obstacles.forEach(rect => {
         const right = node.x + labelRoom
         if (right <= rect.left || node.x - 6 >= rect.right) return
         if (node.y + LABEL_HALF_HEIGHT <= rect.top || node.y - LABEL_HALF_HEIGHT >= rect.bottom) return
-        const moveLeft = right - rect.left
-        const moveDown = rect.bottom - (node.y - LABEL_HALF_HEIGHT)
-        if (moveLeft < moveDown) {
-          node.x -= moveLeft
-        } else {
-          node.y += moveDown
-        }
+        const moves = [
+          { dx: rect.left - right, dy: 0 },
+          { dx: rect.right - (node.x - 6), dy: 0 },
+          { dx: 0, dy: rect.top - (node.y + LABEL_HALF_HEIGHT) },
+          { dx: 0, dy: rect.bottom - (node.y - LABEL_HALF_HEIGHT) }
+        ]
+        const move = moves.reduce((best, m) =>
+          Math.abs(m.dx) + Math.abs(m.dy) < Math.abs(best.dx) + Math.abs(best.dy) ? m : best)
+        node.x += move.dx
+        node.y += move.dy
       })
     })
   }

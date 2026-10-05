@@ -45,7 +45,7 @@ export class Home {
       const mapContainer = page.querySelector('.home-map')
       this.projectMap = new ProjectMap(projects, {
         onOpen: (id) => { window.location.hash = `projects/${id}` },
-        getObstacles: () => this.noteObstacle(page, mapContainer)
+        getObstacles: () => this.textObstacles(page, mapContainer)
       })
       mapContainer.appendChild(this.projectMap.render())
     })
@@ -87,20 +87,24 @@ export class Home {
   }
 
   /**
-   * The note's rectangle in map coordinates, padded, so the map avoids it
+   * The static text on the page (note, bio, caption) as padded rectangles
+   * in map coordinates, so the interactive map keeps clear of it
    */
-  noteObstacle(page, mapContainer) {
-    const note = page.querySelector('.now-note')
-    if (!note || note.offsetParent === null) return []
-    const n = note.getBoundingClientRect()
+  textObstacles(page, mapContainer) {
     const m = mapContainer.getBoundingClientRect()
-    const pad = 20
-    return [{
-      left: n.left - m.left - pad,
-      top: n.top - m.top - pad,
-      right: n.right - m.left + pad,
-      bottom: n.bottom - m.top + pad
-    }]
+    const pad = 48
+    return ['.now-note', '.home-bio', '.map-caption']
+      .map(selector => page.querySelector(selector))
+      .filter(el => el && el.offsetParent !== null && el.textContent.trim())
+      .map(el => {
+        const r = el.getBoundingClientRect()
+        return {
+          left: r.left - m.left - pad,
+          top: r.top - m.top - pad,
+          right: r.right - m.left + pad,
+          bottom: r.bottom - m.top + pad
+        }
+      })
   }
 
   destroy() {
