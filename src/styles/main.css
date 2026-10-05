@@ -293,7 +293,7 @@ body {
 
 .map-link {
   stroke: var(--ink-3);
-  stroke-opacity: 0.22;
+  stroke-opacity: 0.16;
   stroke-width: 1;
   transition: stroke-opacity var(--transition-base), stroke var(--transition-base);
 }
@@ -344,9 +344,17 @@ body {
   fill: var(--ink-3);
 }
 
+/* Tool labels appear only when a linked project or the tool is highlighted */
 .map-node.is-tech .map-label {
   fill: var(--ink-3);
   font-size: 11.5px;
+  opacity: 0;
+  transition: opacity var(--transition-base), fill var(--transition-base);
+}
+
+.map-node.is-tech.is-linked .map-label,
+.map-node.is-tech.is-active .map-label {
+  opacity: 1;
 }
 
 .map-node.is-dragging {
@@ -775,20 +783,12 @@ body {
   .home-map {
     position: relative;
     inset: auto;
-    height: min(64vh, 34rem);
-    min-height: 24rem;
+    height: 78vh;
+    min-height: 32rem;
     margin-bottom: var(--space-xl); /* Room for the caption below */
   }
   .map-label {
     font-size: 12px;
-  }
-  .map-node.is-tech .map-label {
-    opacity: 0;
-    transition: opacity var(--transition-base);
-  }
-  .map-node.is-tech.is-linked .map-label,
-  .map-node.is-tech.is-active .map-label {
-    opacity: 1;
   }
   .map-caption {
     right: 0;

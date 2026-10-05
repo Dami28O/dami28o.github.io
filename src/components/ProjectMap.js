@@ -167,7 +167,9 @@ export class ProjectMap {
     this.measure()
 
     const bounds = this.getBounds()
-    const spread = Math.min(bounds.right - bounds.left, bounds.bottom - bounds.top)
+    const areaWidth = bounds.right - bounds.left
+    const areaHeight = bounds.bottom - bounds.top
+    const scale = Math.sqrt(areaWidth * areaHeight)
     const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
 
     // Seed positions close to the centre so the layout blooms outwards
@@ -177,16 +179,17 @@ export class ProjectMap {
       node.y = bounds.cy + Math.sin(angle) * 20
     })
 
+    // Centring is weaker along the longer side so the map fills the area
+    const wide = areaWidth >= areaHeight
     this.simulation = forceSimulation(this.nodes)
       .force('link', forceLink(this.links).id(d => d.id)
-        .distance(isMobile ? 40 : Math.max(50, spread * 0.12))
-        .strength(0.3))
+        .distance(scale * (isMobile ? 0.11 : 0.13))
+        .strength(0.25))
       .force('charge', forceManyBody()
-        .strength(d => d.type === 'project' ? (isMobile ? -90 : -180) : (isMobile ? -40 : -70))
-        .distanceMax(spread * 0.6))
+        .strength(d => (d.type === 'project' ? -1 : -0.3) * scale * (isMobile ? 0.3 : 0.75)))
       .force('collide', forceCollide(d => this.collideRadius(d)).strength(0.9).iterations(3))
-      .force('x', forceX(bounds.cx).strength(0.06))
-      .force('y', forceY(bounds.cy).strength(isMobile ? 0.06 : 0.1))
+      .force('x', forceX(bounds.cx).strength(wide ? 0.012 : 0.07))
+      .force('y', forceY(bounds.cy).strength(wide ? 0.05 : 0.025))
       .on('tick', () => this.tick())
 
     if (this.reducedMotion) {
@@ -202,13 +205,12 @@ export class ProjectMap {
   }
 
   collideRadius(node) {
+    // Tool labels stay hidden until highlighted, so tools only need a little room
+    if (node.type === 'tech') return 12
     const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
-    // Tool labels are hidden on phones until highlighted
-    if (isMobile && node.type === 'tech') return 14
-    const charWidth = node.type === 'project' ? (isMobile ? 5.8 : 6.4) : 5.4
-    const labelWidth = node.label.length * charWidth
+    const labelWidth = node.label.length * (isMobile ? 5.8 : 6.4)
     // Labels sit to the right, so treat the node as a wide disc
-    return (node.type === 'project' ? 12 : 8) + labelWidth / 2
+    return 14 + labelWidth / 2
   }
 
   measure() {
@@ -240,7 +242,7 @@ export class ProjectMap {
 
     this.nodes.forEach(node => {
       // Keep nodes (and their labels) inside the drawable area
-      const labelRoom = node.type === 'project' ? Math.min(150, node.label.length * 6.2 + 14) : 40
+      const labelRoom = node.type === 'project' ? Math.min(150, node.label.length * 6.2 + 14) : 8
       node.x = Math.max(bounds.left + 8, Math.min(bounds.right - labelRoom, node.x))
       node.y = Math.max(bounds.top + 8, Math.min(bounds.bottom - 8, node.y))
       node.el.setAttribute('transform', `translate(${node.x.toFixed(1)},${node.y.toFixed(1)})`)
